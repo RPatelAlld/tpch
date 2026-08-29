@@ -15,6 +15,22 @@
   <title>TPCH Owners Hub — The Prestige City Hyderabad</title>
   <meta name="description" content="The digital clubhouse for owners of The Prestige City Hyderabad. Construction updates, documents, home-loan guidance, governance and community — by owners, for owners." />
 
+  <!-- Social / share -->
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <meta name="theme-color" content="#20362E" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="TPCH Owners Hub" />
+  <meta property="og:title" content="TPCH Owners Hub — The Prestige City Hyderabad" />
+  <meta property="og:description" content="Everything about your home — in one calm, trusted place. Construction, documents, home loans, governance and community, by owners for owners." />
+  <meta property="og:url" content="https://tpch.in/" />
+  <meta property="og:image" content="https://tpch.in/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="TPCH Owners Hub — The Prestige City Hyderabad" />
+  <meta name="twitter:description" content="Everything about your home — in one calm, trusted place. By owners, for owners." />
+  <meta name="twitter:image" content="https://tpch.in/og-image.png" />
+
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -32,6 +48,7 @@
         <span class="bt">The Prestige City<small>Owners Hub · Hyderabad</small></span>
       </a>
       <nav class="links">
+        <a href="explore.html">Explore</a>
         <a href="construction.html">Construction</a>
         <a href="documents.html">Documents</a>
         <a href="finance.html">Finance</a>
@@ -86,10 +103,18 @@
       <div class="head reveal">
         <span class="kicker">The Hub</span>
         <h2>Your home. Everything in one place.</h2>
-        <p>Six spaces that carry you from construction to handover to living — maintained by fellow owners, kept deliberately simple.</p>
+        <p>Seven spaces that carry you from construction to handover to living — maintained by fellow owners, kept deliberately simple.</p>
       </div>
 
       <div class="cards">
+        <a class="card reveal" href="explore.html">
+          <div class="ph"><span class="slot">3D tour</span><span class="ico">🧭</span></div>
+          <div class="body">
+            <h3>Explore in 3D</h3>
+            <p>Walk the project in Prestige's 3D tour, then read how the sun falls on your flat and what each tower looks out on — lake, greenery, mall.</p>
+            <span class="go">See views &amp; orientation <span class="arw">→</span></span>
+          </div>
+        </a>
         <a class="card reveal" href="construction.html">
           <div class="ph"><span class="slot">Owner photo</span><span class="ico">🏗</span></div>
           <div class="body">
@@ -210,6 +235,22 @@
         <p>These insights belong to the owners who built them. Add your own flat to the Registry, and you unlock everyone else's — aggregated, never individual.</p>
       </div>
 
+      <!-- How the Registry works: 3 plain steps -->
+      <div class="reveal" style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:0 0 30px">
+        <div class="notecard" style="border-left-color:var(--gold)">
+          <h3 style="margin-top:0">1 · Add your flat</h3>
+          <p style="margin:0;color:var(--graphite-soft);font-size:14.5px;line-height:1.6">A 60-second form — tower, facing, and the figures from the grey box on your cost sheet. Your individual entry is never shown to anyone.</p>
+        </div>
+        <div class="notecard" style="border-left-color:var(--gold)">
+          <h3 style="margin-top:0">2 · Join the owners' group</h3>
+          <p style="margin:0;color:var(--graphite-soft);font-size:14.5px;line-height:1.6">You get an automated email with an access link. Sign in with the <b>Google account you used on the form</b> — that's what unlocks the members-only tools.</p>
+        </div>
+        <div class="notecard" style="border-left-color:var(--gold)">
+          <h3 style="margin-top:0">3 · See everyone's</h3>
+          <p style="margin:0;color:var(--graphite-soft);font-size:14.5px;line-height:1.6">Reciprocal: because you shared yours, you now see the community aggregates — price benchmarks, plans and demand. Only ever totals and ranges, never who-paid-what.</p>
+        </div>
+      </div>
+
       <div class="vault reveal">
         <!-- Behind the gate: the live Looker Studio insights (shared only with the Owners' Google Group) render here for signed-in members -->
         <div class="blur" aria-hidden="true">
@@ -247,6 +288,23 @@
     </div>
   </section>
 
+  <!-- ===================== PROJECT CREDENTIALS ===================== -->
+  <section class="band" id="credentials" style="padding:40px 0 70px">
+    <div class="wrap">
+      <div class="notecard reveal" style="border-left-color:var(--gold);display:flex;flex-wrap:wrap;align-items:center;gap:18px;justify-content:space-between">
+        <div>
+          <div class="kicker" style="margin-bottom:8px">Verified &amp; on record</div>
+          <p style="margin:0;color:var(--graphite-soft);font-size:14.5px;line-height:1.6;max-width:560px">The reassurance owners ask for, one tap away — the project's RERA registration and its GHMC building permit, straight from the source.</p>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <a class="btn btn-outline" href="https://drive.google.com/file/d/110pO0RETrkcGLmdT0qGMOWK4UDYg0YlN/view" target="_blank" rel="noopener">RERA Certificate <span class="arw">→</span></a>
+          <a class="btn btn-outline" href="https://drive.google.com/file/d/12mCZSvjtZzqLMbZK6b74vRQZ-GLSgQFF/view" target="_blank" rel="noopener">GHMC Permit <span class="arw">→</span></a>
+          <a class="btn btn-dark" href="documents.html">All documents <span class="arw">→</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ===================== FOOTER ===================== -->
   <footer class="foot">
     <div class="wrap">
@@ -257,6 +315,7 @@
         </div>
         <div class="col">
           <h5>The Hub</h5>
+          <a href="explore.html">Explore in 3D</a>
           <a href="construction.html">Construction</a>
           <a href="documents.html">Documents</a>
           <a href="finance.html">Home Loans</a>

@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#20362E"/>
+      <stop offset="1" stop-color="#152420"/>
+    </linearGradient>
+    <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0e1a15" stop-opacity="0"/>
+      <stop offset="1" stop-color="#0e1a15" stop-opacity="0.55"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- skyline silhouette -->
+  <g fill="#0e1a15" opacity="0.8">
+    <rect x="60"  y="360" width="70" height="270"/>
+    <rect x="150" y="300" width="78" height="330"/>
+    <rect x="250" y="390" width="64" height="240"/>
+    <rect x="330" y="270" width="86" height="360"/>
+    <rect x="440" y="350" width="70" height="280"/>
+    <rect x="530" y="410" width="60" height="220"/>
+    <rect x="610" y="290" width="82" height="340"/>
+    <rect x="712" y="380" width="66" height="250"/>
+    <rect x="800" y="255" width="90" height="375"/>
+    <rect x="912" y="360" width="72" height="270"/>
+    <rect x="1004" y="410" width="60" height="220"/>
+    <rect x="1084" y="300" width="90" height="330"/>
+  </g>
+  <rect width="1200" height="630" fill="url(#fade)"/>
+
+  <!-- gold hairline frame -->
+  <rect x="28" y="28" width="1144" height="574" fill="none" stroke="#B99A5B" stroke-opacity="0.55" stroke-width="1.5"/>
+
+  <!-- brand mark -->
+  <rect x="72" y="72" width="58" height="58" rx="12" fill="none" stroke="#B99A5B" stroke-width="1.6"/>
+  <text x="101" y="113" font-family="Georgia, serif" font-size="36" font-weight="600" fill="#B99A5B" text-anchor="middle">P</text>
+
+  <!-- kicker -->
+  <g font-family="Inter, Arial, sans-serif">
+    <line x1="72" y1="210" x2="98" y2="210" stroke="#B99A5B" stroke-width="1.5"/>
+    <text x="112" y="215" font-size="20" letter-spacing="3" fill="#B99A5B" font-weight="600">BUILT BY PRESTIGE · CONNECTED BY OWNERS</text>
+  </g>
+
+  <!-- title -->
+  <text x="70" y="320" font-family="'Cormorant Garamond', Georgia, serif" font-size="96" font-weight="600" fill="#F4F1E9">The Prestige City</text>
+  <text x="74" y="386" font-family="Inter, Arial, sans-serif" font-size="34" fill="#CFE0D6" letter-spacing="1">Hyderabad · Owners Hub</text>
+
+  <!-- tagline -->
+  <text x="74" y="470" font-family="'Cormorant Garamond', Georgia, serif" font-size="34" font-style="italic" fill="#E7E2D5">Everything about your home — in one calm, trusted place.</text>
+
+  <!-- url -->
+  <text x="74" y="558" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="600" fill="#B99A5B" letter-spacing="1">tpch.in</text>
+  <text x="1128" y="558" font-family="Inter, Arial, sans-serif" font-size="18" fill="#8fa79a" text-anchor="end">By owners, for owners</text>
+</svg>
