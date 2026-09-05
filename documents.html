@@ -311,7 +311,7 @@
     function status(t,c){ var s=document.getElementById('mdoc-status'); if(s){ s.textContent=t; s.style.color=c||'var(--muted)'; } }
     window.__memberDocs=function(res){
       if(res && res.member && res.docs){
-        if(window.tpchUnlockDocs) window.tpchUnlockDocs(res.docs);
+        if(window.tpchUnlockDocs) window.tpchUnlockDocs(res);
         status('✓ Unlocked — the members-only documents below are now open.','var(--forest)');
         var b=document.getElementById('mdoc-btn'); if(b) b.style.display='none';
       } else {

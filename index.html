@@ -219,7 +219,11 @@
               <div class="t">Latest Newsletter</div>
               <div class="s">Registered owners · PDF · 36 pages</div>
             </div>
-            <a class="btn btn-outline" data-mdoc="newsletter" href="documents.html">Get access <span class="arw">→</span></a>
+            <div style="text-align:right">
+              <a class="btn btn-outline" id="nl-cta" data-mdoc="newsletter" href="documents.html" style="display:none">Open newsletter <span class="arw">↗</span></a>
+              <div id="gsi-tile"></div>
+              <div id="nl-msg" style="font-size:11.5px;color:var(--muted);margin-top:6px">Registered? Sign in to open it.</div>
+            </div>
           </div>
         </div>
       </div>
@@ -294,6 +298,7 @@
         <div id="owner-signin" style="margin-top:20px;padding-top:22px;border-top:1px solid var(--line)">
           <p style="margin:0 0 14px;font-size:14.5px;color:var(--graphite-soft)"><b>Registered owner?</b> Sign in with the Google account you used on the Registry to open and edit your own demand list.</p>
           <div id="gsi-button" style="min-height:44px"></div>
+          <p id="gsi-msg" style="margin:10px 0 0;font-size:13px;color:var(--muted)"></p>
           <p style="margin:14px 0 0;font-size:13px;color:var(--muted)">Not registered yet, or you used a non-Google email? <a href="https://docs.google.com/forms/d/e/1FAIpQLSe66l8jd7VZq5bCoF7SQzkZF7dnFgtHQRIvc4426beYnAFgdA/viewform" target="_blank" rel="noopener" style="color:var(--gold-deep)">Add your flat to the Registry →</a></p>
         </div>
       </div>
@@ -326,28 +331,49 @@
       })();
       </script>
 
-      <!-- Sign in with Google (GIS): verifies the owner, matches the registry, opens their private list -->
+      <!-- Sign in with Google (GIS): one verify → unlock members docs in place + reveal demand-list link. Buttons in the Community section AND on the newsletter tile share this callback. -->
       <script src="https://accounts.google.com/gsi/client" async defer></script>
       <script>
       (function(){
         var CLIENT_ID='174865097267-vt5iq4fr1rc518qei72a0t1g63jpadro.apps.googleusercontent.com';
         var EXEC='https://script.google.com/macros/s/AKfycbw8MaBdJJPIb8XyP73k1_IwwTwauXKin5R6-NXEr-Q4P81rrP_JHJTYJYLOCl3QREO8/exec';
+        var FORM='https://docs.google.com/forms/d/e/1FAIpQLSe66l8jd7VZq5bCoF7SQzkZF7dnFgtHQRIvc4426beYnAFgdA/viewform';
+        function q(id){ return document.getElementById(id); }
+        function tileUnlocked(){ var c=q('nl-cta'); if(c) c.style.display=''; var b=q('gsi-tile'); if(b) b.style.display='none'; var m=q('nl-msg'); if(m) m.textContent=''; }
+        function communitySignedIn(res){
+          var os=q('owner-signin'); if(!os) return;
+          var nm=(res&&res.name?String(res.name).split(' ')[0]:'') || 'there';
+          var listBtn=res&&res.list ? '<a class="btn btn-dark" href="'+res.list+'" target="_blank" rel="noopener">Open my demand list <span class="arw">→</span></a>' : '';
+          os.innerHTML='<p style="margin:0 0 14px;font-size:14.5px;color:var(--forest)"><b>✓ Signed in as '+nm+'.</b> Your demand list and the members-only documents are unlocked.</p>'+listBtn;
+        }
+        window.__homeMember=function(res){
+          if(res && res.member){
+            if(window.tpchUnlockDocs) window.tpchUnlockDocs(res);
+            tileUnlocked();
+            communitySignedIn(res);
+          } else {
+            var m=q('gsi-msg'); if(m) m.innerHTML='That Google account isn’t in the Registry. <a href="'+FORM+'" target="_blank" rel="noopener" style="color:var(--gold-deep)">Add your flat →</a>';
+            var tm=q('nl-msg'); if(tm) tm.innerHTML='That account isn’t registered. <a href="#community">Add your flat →</a>';
+          }
+        };
+        function onCred(resp){
+          if(!(resp&&resp.credential)) return;
+          var m=q('gsi-msg'); if(m) m.textContent='Checking…';
+          var sc=document.createElement('script');
+          sc.src=EXEC+'?action=member&callback=__homeMember&idtoken='+encodeURIComponent(resp.credential);
+          sc.onerror=function(){ window.location.href=EXEC+'?action=resolve&idtoken='+encodeURIComponent(resp.credential); };
+          document.head.appendChild(sc);
+        }
         function init(){
           if(!(window.google&&google.accounts&&google.accounts.id)) return false;
           try{
-            google.accounts.id.initialize({
-              client_id: CLIENT_ID,
-              callback: function(resp){
-                if(resp&&resp.credential){
-                  window.location.href = EXEC+'?action=resolve&idtoken='+encodeURIComponent(resp.credential);
-                }
-              }
-            });
-            var el=document.getElementById('gsi-button');
-            if(el) google.accounts.id.renderButton(el,{theme:'filled_black',size:'large',text:'signin_with',shape:'pill',logo_alignment:'left'});
+            google.accounts.id.initialize({ client_id: CLIENT_ID, callback: onCred });
+            var b1=q('gsi-button'); if(b1) google.accounts.id.renderButton(b1,{theme:'filled_black',size:'large',text:'signin_with',shape:'pill',logo_alignment:'left'});
+            var b2=q('gsi-tile'); if(b2 && !window.__tpchMember) google.accounts.id.renderButton(b2,{theme:'outline',size:'medium',text:'signin_with',shape:'pill'});
           }catch(e){}
           return true;
         }
+        if(window.__tpchMember){ tileUnlocked(); communitySignedIn(window.__tpchMember); }
         var n=0,t=setInterval(function(){ n++; if(init()||n>60) clearInterval(t); },150);
       })();
       </script>

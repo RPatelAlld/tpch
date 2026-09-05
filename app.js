@@ -50,17 +50,20 @@
       }
     });
   }
-  var cached = null;
+  var m = null;
   try {
     var raw = localStorage.getItem('tpch_mdocs');
-    if(raw){ var o = JSON.parse(raw); if(o && o.docs && o.exp > Date.now()) cached = o.docs; }
+    if(raw){ var o = JSON.parse(raw); if(o && o.m && o.m.docs && o.exp > Date.now()) m = o.m; }
   } catch(e){}
-  window.__tpchMemberDocs = cached;
-  if(cached) apply(cached);
-  window.tpchUnlockDocs = function(docs){
-    if(!docs) return;
-    try { localStorage.setItem('tpch_mdocs', JSON.stringify({ docs: docs, exp: Date.now() + 12*3600*1000 })); } catch(e){}
-    window.__tpchMemberDocs = docs;
-    apply(docs);
+  window.__tpchMember = m;                    // { docs, list, name } or null
+  window.__tpchMemberDocs = m ? m.docs : null;
+  if(m) apply(m.docs);
+  // Called with the full member payload { member, docs, list, name } after a verified sign-in.
+  window.tpchUnlockDocs = function(mem){
+    if(!mem || !mem.docs) return;
+    try { localStorage.setItem('tpch_mdocs', JSON.stringify({ m: mem, exp: Date.now() + 12*3600*1000 })); } catch(e){}
+    window.__tpchMember = mem;
+    window.__tpchMemberDocs = mem.docs;
+    apply(mem.docs);
   };
 })();
