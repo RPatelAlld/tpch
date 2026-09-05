@@ -172,8 +172,8 @@
             <div class="src">Source: <b>Registration Dept.</b></div>
             <div class="src">Statement of Encumbrance on Property · PDF</div>
             <div class="src memnote">Members-only document — contains owners' details, so it's not public. Add your flat to the Registry to get access.</div>
-            <div class="actions" data-mdoc="ec">
-              <a class="view" href="index.html#community">🔒 Register to unlock</a>
+            <div class="actions">
+              <a class="view" data-mdoc="ec" href="index.html#community">🔒 Register to unlock</a>
             </div>
           </div>
         </article>
@@ -198,8 +198,8 @@
             <div class="src">Source: <b>Prestige</b></div>
             <div class="src">Tower-by-tower progress · PDF · 36 pages</div>
             <div class="src memnote">Members-only document — the builder's private newsletter. Add your flat to the Registry to get access.</div>
-            <div class="actions" data-mdoc="newsletter">
-              <a class="view" href="index.html#community">🔒 Register to unlock</a>
+            <div class="actions">
+              <a class="view" data-mdoc="newsletter" href="index.html#community">🔒 Register to unlock</a>
             </div>
           </div>
         </article>
@@ -211,8 +211,8 @@
             <div class="src">Source: <b>Prestige</b></div>
             <div class="src">Newest on top · Drive folder</div>
             <div class="src memnote">Members-only archive — the builder's private newsletters. Add your flat to the Registry to get access.</div>
-            <div class="actions" data-mdoc="archive">
-              <a class="view" href="index.html#community">🔒 Register to unlock</a>
+            <div class="actions">
+              <a class="view" data-mdoc="archive" href="index.html#community">🔒 Register to unlock</a>
             </div>
           </div>
         </article>
@@ -311,10 +311,7 @@
     function status(t,c){ var s=document.getElementById('mdoc-status'); if(s){ s.textContent=t; s.style.color=c||'var(--muted)'; } }
     window.__memberDocs=function(res){
       if(res && res.member && res.docs){
-        document.querySelectorAll('[data-mdoc]').forEach(function(box){
-          var url=res.docs[box.getAttribute('data-mdoc')];
-          if(url){ box.innerHTML='<a class="view" href="'+url+'" target="_blank" rel="noopener">View ↗</a>'; }
-        });
+        if(window.tpchUnlockDocs) window.tpchUnlockDocs(res.docs);
         status('✓ Unlocked — the members-only documents below are now open.','var(--forest)');
         var b=document.getElementById('mdoc-btn'); if(b) b.style.display='none';
       } else {
@@ -322,6 +319,8 @@
         if(g){ g.innerHTML='That Google account isn’t in the Registry yet. <a href="index.html#community" style="color:var(--gold-deep)">Add your flat →</a>'; g.style.color='var(--muted)'; }
       }
     };
+    // Already signed in earlier this session? app.js has restored the unlock — reflect it here.
+    if(window.__tpchMemberDocs){ status('✓ Signed in — your members-only documents are open below.','var(--forest)'); var b0=document.getElementById('mdoc-btn'); if(b0) b0.style.display='none'; }
     function init(){
       if(!(window.google&&google.accounts&&google.accounts.id)) return false;
       try{
