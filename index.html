@@ -373,7 +373,9 @@
           }catch(e){}
           return true;
         }
-        if(window.__tpchMember){ tileUnlocked(); communitySignedIn(window.__tpchMember); }
+        function reflectCached(){ if(window.__tpchMember){ tileUnlocked(); communitySignedIn(window.__tpchMember); } }
+        // app.js (loaded at end of body) sets window.__tpchMember from cache — reflect after it runs.
+        if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', reflectCached); } else { reflectCached(); }
         var n=0,t=setInterval(function(){ n++; if(init()||n>60) clearInterval(t); },150);
       })();
       </script>
