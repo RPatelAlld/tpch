@@ -89,6 +89,15 @@
         <button class="filter" data-filter="newsletters">Newsletters</button>
       </div>
 
+      <!-- Members-only unlock: sign in with the registered Google account to reveal the private docs -->
+      <div class="notecard reveal" id="mdoc-gate" style="border-left-color:var(--gold);margin:0 0 26px">
+        <h3 style="margin-top:0">🔒 Members-only documents</h3>
+        <p style="margin:0 0 14px;color:var(--graphite-soft);font-size:14.5px;line-height:1.6">A few documents — the builder's newsletters and the Encumbrance Certificate — are private to registered owners. <b>Sign in with the Google account you used on the Registry</b> to open them right here, no access request needed.</p>
+        <div id="mdoc-btn"></div>
+        <p id="mdoc-status" style="margin:12px 0 0;font-size:13.5px;color:var(--muted)"></p>
+        <p style="margin:8px 0 0;font-size:13px;color:var(--muted)">Not registered yet? <a href="index.html#community" style="color:var(--gold-deep)">Add your flat to the Registry →</a></p>
+      </div>
+
       <div class="doclist" id="doclist">
 
         <article class="docitem" data-cat="prestige">
@@ -163,7 +172,7 @@
             <div class="src">Source: <b>Registration Dept.</b></div>
             <div class="src">Statement of Encumbrance on Property · PDF</div>
             <div class="src memnote">Members-only document — contains owners' details, so it's not public. Add your flat to the Registry to get access.</div>
-            <div class="actions">
+            <div class="actions" data-mdoc="ec">
               <a class="view" href="index.html#community">🔒 Register to unlock</a>
             </div>
           </div>
@@ -189,7 +198,7 @@
             <div class="src">Source: <b>Prestige</b></div>
             <div class="src">Tower-by-tower progress · PDF · 36 pages</div>
             <div class="src memnote">Members-only document — the builder's private newsletter. Add your flat to the Registry to get access.</div>
-            <div class="actions">
+            <div class="actions" data-mdoc="newsletter">
               <a class="view" href="index.html#community">🔒 Register to unlock</a>
             </div>
           </div>
@@ -202,7 +211,7 @@
             <div class="src">Source: <b>Prestige</b></div>
             <div class="src">Newest on top · Drive folder</div>
             <div class="src memnote">Members-only archive — the builder's private newsletters. Add your flat to the Registry to get access.</div>
-            <div class="actions">
+            <div class="actions" data-mdoc="archive">
               <a class="view" href="index.html#community">🔒 Register to unlock</a>
             </div>
           </div>
@@ -291,6 +300,46 @@
       q.addEventListener('input', apply);
       apply();
     })();
+  </script>
+
+  <!-- Members-only unlock: Sign in with Google → verify against the Registry → reveal the private doc links -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script>
+  (function(){
+    var CLIENT_ID='174865097267-vt5iq4fr1rc518qei72a0t1g63jpadro.apps.googleusercontent.com';
+    var EXEC='https://script.google.com/macros/s/AKfycbw8MaBdJJPIb8XyP73k1_IwwTwauXKin5R6-NXEr-Q4P81rrP_JHJTYJYLOCl3QREO8/exec';
+    function status(t,c){ var s=document.getElementById('mdoc-status'); if(s){ s.textContent=t; s.style.color=c||'var(--muted)'; } }
+    window.__memberDocs=function(res){
+      if(res && res.member && res.docs){
+        document.querySelectorAll('[data-mdoc]').forEach(function(box){
+          var url=res.docs[box.getAttribute('data-mdoc')];
+          if(url){ box.innerHTML='<a class="view" href="'+url+'" target="_blank" rel="noopener">View ↗</a>'; }
+        });
+        status('✓ Unlocked — the members-only documents below are now open.','var(--forest)');
+        var b=document.getElementById('mdoc-btn'); if(b) b.style.display='none';
+      } else {
+        var g=document.getElementById('mdoc-status');
+        if(g){ g.innerHTML='That Google account isn’t in the Registry yet. <a href="index.html#community" style="color:var(--gold-deep)">Add your flat →</a>'; g.style.color='var(--muted)'; }
+      }
+    };
+    function init(){
+      if(!(window.google&&google.accounts&&google.accounts.id)) return false;
+      try{
+        google.accounts.id.initialize({ client_id:CLIENT_ID, callback:function(resp){
+          if(resp&&resp.credential){
+            status('Checking your Registry…');
+            var sc=document.createElement('script');
+            sc.src=EXEC+'?action=member&callback=__memberDocs&idtoken='+encodeURIComponent(resp.credential);
+            sc.onerror=function(){ status('Couldn’t verify right now — please try again.'); };
+            document.head.appendChild(sc);
+          }
+        }});
+        var el=document.getElementById('mdoc-btn'); if(el) google.accounts.id.renderButton(el,{theme:'filled_black',size:'large',text:'signin_with',shape:'pill'});
+      }catch(e){}
+      return true;
+    }
+    var n=0,t=setInterval(function(){ n++; if(init()||n>60) clearInterval(t); },150);
+  })();
   </script>
 </body>
 </html>
