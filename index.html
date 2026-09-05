@@ -272,19 +272,57 @@
         </div>
       </div>
 
-      <!-- Coming: community demand + vendor quotes -->
+      <!-- Community demand board — native card, live counts via JSONP where allowed -->
       <div class="demandcard reveal" style="margin-top:30px">
-        <span class="soon">Coming soon</span>
+        <span class="soon" style="color:var(--forest);border-color:var(--forest)">Community demand</span>
         <h3>Community Demand &amp; Group Rates</h3>
-        <p>Registered owners will tell us what they’ll need at handover — AC, chimney, washing machine, modular kitchen, fans and more. We show the live demand for each, and vendors send their quotes to one open group inbox. Group rates, not group purchase — you always buy direct.</p>
-        <div class="chips">
-          <span class="chip">Air Conditioners · <b>— owners</b></span>
-          <span class="chip">Chimneys · <b>— owners</b></span>
-          <span class="chip">Washing Machines · <b>— owners</b></span>
-          <span class="chip">Modular Kitchens · <b>— owners</b></span>
-          <span class="chip">BLDC Fans · <b>— owners</b></span>
+        <p>Registered owners tell us what they’ll need at handover — appliances, modular kitchen, furniture, electricals and more. We pool it into <b>totals by category</b>, so we can approach vendors with real numbers. Group rates, not group purchase — you always buy direct.</p>
+
+        <p id="demand-stat" style="margin:18px 0 0;font-size:14px;color:var(--gold-deep);font-weight:600;display:none"></p>
+
+        <div id="demand-chips" class="chips" style="margin-top:18px">
+          <span class="chip" data-cat="Appliances">🔌 Appliances<b class="cnt" style="display:none"></b></span>
+          <span class="chip" data-cat="Modular Kitchen">🍳 Modular Kitchen<b class="cnt" style="display:none"></b></span>
+          <span class="chip" data-cat="Furniture">🛋️ Furniture<b class="cnt" style="display:none"></b></span>
+          <span class="chip" data-cat="Furnishings">🪟 Furnishings<b class="cnt" style="display:none"></b></span>
+          <span class="chip" data-cat="Electricals &amp; Smart Home">💡 Electricals &amp; Smart Home<b class="cnt" style="display:none"></b></span>
+          <span class="chip" data-cat="Interiors &amp; Services">🛠️ Interiors &amp; Services<b class="cnt" style="display:none"></b></span>
+        </div>
+
+        <p style="margin:20px 0 0;color:var(--muted);font-size:13.5px;line-height:1.6">Only totals are ever shown here — never who needs what. <b>Registered owners</b> add and edit their own list anytime through a private personal link.</p>
+        <div style="margin-top:16px;display:flex;gap:12px;flex-wrap:wrap">
+          <a class="btn btn-dark" href="https://script.google.com/macros/s/AKfycbw8MaBdJJPIb8XyP73k1_IwwTwauXKin5R6-NXEr-Q4P81rrP_JHJTYJYLOCl3QREO8/exec" target="_blank" rel="noopener">Open the full demand board <span class="arw">→</span></a>
+          <a class="btn btn-outline" href="https://docs.google.com/forms/d/e/1FAIpQLSe66l8jd7VZq5bCoF7SQzkZF7dnFgtHQRIvc4426beYnAFgdA/viewform" target="_blank" rel="noopener">Add your flat to the Registry <span class="arw">→</span></a>
         </div>
       </div>
+
+      <!-- Live demand counts: JSONP feed; fails silently (never blocks or breaks the page) -->
+      <script>
+      (function(){
+        var EXEC='https://script.google.com/macros/s/AKfycbw8MaBdJJPIb8XyP73k1_IwwTwauXKin5R6-NXEr-Q4P81rrP_JHJTYJYLOCl3QREO8/exec';
+        window.__tpchDemand=function(d){
+          try{
+            if(!d||!d.ok||!d.rows) return;
+            var byCat={}, items=0;
+            d.rows.forEach(function(r){ byCat[r.category]=(byCat[r.category]||0)+(r.total||0); items+=(r.total||0); });
+            document.querySelectorAll('#demand-chips .chip').forEach(function(ch){
+              var n=byCat[ch.getAttribute('data-cat')]||0, b=ch.querySelector('.cnt');
+              if(n>0 && b){ b.textContent=' · '+n; b.style.display=''; }
+            });
+            var owners=d.owners||0;
+            if(owners>0 || items>0){
+              var s=document.getElementById('demand-stat');
+              s.textContent=owners+' owner'+(owners===1?'':'s')+' · '+items+' item'+(items===1?'':'s')+' requested so far — updates automatically.';
+              s.style.display='';
+            }
+          }catch(e){}
+        };
+        var s=document.createElement('script');
+        s.src=EXEC+'?callback=__tpchDemand&_='+Date.now();
+        s.async=true; s.onerror=function(){ if(s.parentNode) s.parentNode.removeChild(s); };
+        document.head.appendChild(s);
+      })();
+      </script>
     </div>
   </section>
 
