@@ -289,10 +289,12 @@
           <span class="chip" data-cat="Interiors &amp; Services">🛠️ Interiors &amp; Services<b class="cnt" style="display:none"></b></span>
         </div>
 
-        <p style="margin:20px 0 0;color:var(--muted);font-size:13.5px;line-height:1.6">Only totals are ever shown here — never who needs what. <b>Registered owners</b> add and edit their own list anytime through a private personal link.</p>
-        <div style="margin-top:16px;display:flex;gap:12px;flex-wrap:wrap">
-          <a class="btn btn-dark" href="https://script.google.com/macros/s/AKfycbw8MaBdJJPIb8XyP73k1_IwwTwauXKin5R6-NXEr-Q4P81rrP_JHJTYJYLOCl3QREO8/exec" target="_blank" rel="noopener">Open the full demand board <span class="arw">→</span></a>
-          <a class="btn btn-outline" href="https://docs.google.com/forms/d/e/1FAIpQLSe66l8jd7VZq5bCoF7SQzkZF7dnFgtHQRIvc4426beYnAFgdA/viewform" target="_blank" rel="noopener">Add your flat to the Registry <span class="arw">→</span></a>
+        <p style="margin:20px 0 0;color:var(--muted);font-size:13.5px;line-height:1.6">Only totals are ever shown here — never who needs what. <b>Registered owners</b> sign in below to add and manage their own list privately.</p>
+
+        <div id="owner-signin" style="margin-top:20px;padding-top:22px;border-top:1px solid var(--line)">
+          <p style="margin:0 0 14px;font-size:14.5px;color:var(--graphite-soft)"><b>Registered owner?</b> Sign in with the Google account you used on the Registry to open and edit your own demand list.</p>
+          <div id="gsi-button" style="min-height:44px"></div>
+          <p style="margin:14px 0 0;font-size:13px;color:var(--muted)">Not registered yet, or you used a non-Google email? <a href="https://docs.google.com/forms/d/e/1FAIpQLSe66l8jd7VZq5bCoF7SQzkZF7dnFgtHQRIvc4426beYnAFgdA/viewform" target="_blank" rel="noopener" style="color:var(--gold-deep)">Add your flat to the Registry →</a></p>
         </div>
       </div>
 
@@ -321,6 +323,32 @@
         s.src=EXEC+'?callback=__tpchDemand&_='+Date.now();
         s.async=true; s.onerror=function(){ if(s.parentNode) s.parentNode.removeChild(s); };
         document.head.appendChild(s);
+      })();
+      </script>
+
+      <!-- Sign in with Google (GIS): verifies the owner, matches the registry, opens their private list -->
+      <script src="https://accounts.google.com/gsi/client" async defer></script>
+      <script>
+      (function(){
+        var CLIENT_ID='174865097267-vt5iq4fr1rc518qei72a0t1g63jpadro.apps.googleusercontent.com';
+        var EXEC='https://script.google.com/macros/s/AKfycbw8MaBdJJPIb8XyP73k1_IwwTwauXKin5R6-NXEr-Q4P81rrP_JHJTYJYLOCl3QREO8/exec';
+        function init(){
+          if(!(window.google&&google.accounts&&google.accounts.id)) return false;
+          try{
+            google.accounts.id.initialize({
+              client_id: CLIENT_ID,
+              callback: function(resp){
+                if(resp&&resp.credential){
+                  window.location.href = EXEC+'?action=resolve&idtoken='+encodeURIComponent(resp.credential);
+                }
+              }
+            });
+            var el=document.getElementById('gsi-button');
+            if(el) google.accounts.id.renderButton(el,{theme:'filled_black',size:'large',text:'signin_with',shape:'pill',logo_alignment:'left'});
+          }catch(e){}
+          return true;
+        }
+        var n=0,t=setInterval(function(){ n++; if(init()||n>60) clearInterval(t); },150);
       })();
       </script>
     </div>
