@@ -183,7 +183,9 @@
       </div>
       <div class="foot reveal">
         <a class="btn btn-gold" href="construction.html">View tower progress <span class="arw">→</span></a>
-        <a class="btn btn-ghost" href="https://docs.google.com/forms/d/e/1FAIpQLSe66l8jd7VZq5bCoF7SQzkZF7dnFgtHQRIvc4426beYnAFgdA/viewform" target="_blank" rel="noopener">Join the Registry <span class="arw">→</span></a>
+        <a class="btn btn-ghost" data-when="anon" href="#owner-signin">Check if you're registered <span class="arw">→</span></a>
+        <a class="btn btn-ghost" data-when="nonmember" href="https://docs.google.com/forms/d/e/1FAIpQLSe66l8jd7VZq5bCoF7SQzkZF7dnFgtHQRIvc4426beYnAFgdA/viewform" target="_blank" rel="noopener" style="display:none">Join the Registry <span class="arw">→</span></a>
+        <a class="btn btn-ghost" data-when="member" href="documents.html" style="display:none">Members area <span class="arw">→</span></a>
       </div>
     </div>
   </section>
@@ -282,7 +284,9 @@
             <div class="ic">🔒</div>
             <h3>For registered owners</h3>
             <p>These insights belong to the owners in the Registry. Add your flat to join — then you’ll open them through the owners’ group, signed in with your Google account on our shared tools.</p>
-            <a class="btn btn-gold" href="https://docs.google.com/forms/d/e/1FAIpQLSe66l8jd7VZq5bCoF7SQzkZF7dnFgtHQRIvc4426beYnAFgdA/viewform" target="_blank" rel="noopener">Add your flat to the Registry <span class="arw">→</span></a>
+            <a class="btn btn-gold" data-when="anon" href="#owner-signin">Sign in to check your status <span class="arw">→</span></a>
+            <a class="btn btn-gold" data-when="nonmember" href="https://docs.google.com/forms/d/e/1FAIpQLSe66l8jd7VZq5bCoF7SQzkZF7dnFgtHQRIvc4426beYnAFgdA/viewform" target="_blank" rel="noopener" style="display:none">Add your flat to the Registry <span class="arw">→</span></a>
+            <a class="btn btn-gold" data-when="member" href="documents.html" style="display:none">✓ You’re registered — open the members area <span class="arw">→</span></a>
             <div class="gate-note">Reciprocal: you share yours, you see everyone’s. Only community aggregates — individual prices are never shown.</div>
           </div>
         </div>
@@ -308,10 +312,11 @@
         <p style="margin:20px 0 0;color:var(--muted);font-size:13.5px;line-height:1.6">Only totals are ever shown here — never who needs what. <b>Registered owners</b> sign in below to add and manage their own list privately.</p>
 
         <div id="owner-signin" style="margin-top:20px;padding-top:22px;border-top:1px solid var(--line)">
-          <p style="margin:0 0 14px;font-size:14.5px;color:var(--graphite-soft)"><b>Registered owner?</b> Sign in with the Google account you used on the Registry to open and edit your own demand list.</p>
+          <p style="margin:0 0 14px;font-size:14.5px;color:var(--graphite-soft)"><b>Sign in with Google first</b> — we’ll check the Registry for you. Already added your flat? You’ll go straight to your own demand list. Not yet? We’ll show you how to join. Use the Google account you’d put (or already put) on the form.</p>
           <div id="gsi-button" style="min-height:44px"></div>
           <p id="gsi-msg" style="margin:10px 0 0;font-size:13px;color:var(--muted)"></p>
-          <p style="margin:14px 0 0;font-size:13px;color:var(--muted)">Not registered yet, or you used a non-Google email? <a href="https://docs.google.com/forms/d/e/1FAIpQLSe66l8jd7VZq5bCoF7SQzkZF7dnFgtHQRIvc4426beYnAFgdA/viewform" target="_blank" rel="noopener" style="color:var(--gold-deep)">Add your flat to the Registry →</a></p>
+          <p data-when="nonmember" style="display:none;margin:14px 0 0;font-size:13.5px;color:var(--gold-deep)"><b>We didn’t find your flat on the Registry.</b> <a href="https://docs.google.com/forms/d/e/1FAIpQLSe66l8jd7VZq5bCoF7SQzkZF7dnFgtHQRIvc4426beYnAFgdA/viewform" target="_blank" rel="noopener" style="color:var(--gold-deep)">Add your flat to the Registry →</a></p>
+          <p data-when="anon nonmember" style="margin:14px 0 0;font-size:12px;color:var(--muted)">No Google account, or you used a non-Google email on the form? <a href="https://docs.google.com/forms/d/e/1FAIpQLSe66l8jd7VZq5bCoF7SQzkZF7dnFgtHQRIvc4426beYnAFgdA/viewform" target="_blank" rel="noopener" style="color:var(--muted);text-decoration:underline">register here</a> — but if you’ve registered before, please sign in above rather than filling it again.</p>
         </div>
       </div>
 
@@ -360,12 +365,13 @@
         }
         window.__homeMember=function(res){
           if(res && res.member){
-            if(window.tpchUnlockDocs) window.tpchUnlockDocs(res);
+            if(window.tpchUnlockDocs) window.tpchUnlockDocs(res);  // caches member + flips gate to "member"
             tileUnlocked();
             communitySignedIn(res);
           } else {
-            var m=q('gsi-msg'); if(m) m.innerHTML='That Google account isn’t in the Registry. <a href="'+FORM+'" target="_blank" rel="noopener" style="color:var(--gold-deep)">Add your flat →</a>';
-            var tm=q('nl-msg'); if(tm) tm.innerHTML='That account isn’t registered. <a href="#community">Add your flat →</a>';
+            if(window.tpchSetNonMember) window.tpchSetNonMember();  // flips gate to "nonmember" — reveals registry links
+            var m=q('gsi-msg'); if(m) m.innerHTML='That Google account isn’t on the Registry yet. Add your flat below and you’ll get straight in next time.';
+            var tm=q('nl-msg'); if(tm) tm.innerHTML='That account isn’t registered yet. <a href="#owner-signin">Add your flat →</a>';
           }
         };
         function onCred(resp){
