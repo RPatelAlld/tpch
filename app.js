@@ -64,6 +64,16 @@
     if(nonmemberValid()) return 'nonmember';
     return 'anon';
   }
+  // Fill any <a data-mlink="list"> with the signed-in member's own demand-list URL (from the cached session).
+  function applyLinks(){
+    var url = window.__tpchMember && window.__tpchMember.list;
+    if(!url) return;
+    document.querySelectorAll('a[data-mlink="list"]').forEach(function(a){
+      a.setAttribute('href', url);
+      a.setAttribute('target', '_blank');
+      a.setAttribute('rel', 'noopener');
+    });
+  }
   function applyGate(){
     var st = state();
     window.__tpchState = st;
@@ -71,6 +81,7 @@
       var want = el.getAttribute('data-when').split(/\s+/);
       el.style.display = (want.indexOf(st) >= 0) ? '' : 'none';
     });
+    applyLinks();
   }
   window.tpchApplyGate = applyGate;
 
