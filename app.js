@@ -40,8 +40,11 @@
 // Elements opt in with data-when="anon" | "nonmember" | "member" (space-separated to match several).
 // This stops already-registered owners from ever seeing an "Add to Registry" link and re-filling it.
 (function(){
-  var LABELS = { newsletter:'Open newsletter ↗', ec:'Open EC ↗', archive:'Open archive ↗' };
+  var LABELS = { newsletter:'Open newsletter ↗', ec:'Open EC ↗', archive:'Open archive ↗', whatsapp:'Owners’ WhatsApp ↗' };
   var MEMBER_KEY = 'tpch_mdocs', REG_KEY = 'tpch_reg';
+  // Inject member-only links into <a data-mdoc="key">. The URL is never in the page source; it
+  // arrives only in the verified-member payload. Anchors with data-keeptext keep their own label
+  // (used for the WhatsApp invite, which appears with different wording in different places).
   function apply(docs){
     if(!docs) return;
     document.querySelectorAll('a[data-mdoc]').forEach(function(a){
@@ -50,7 +53,7 @@
         a.setAttribute('href', url);
         a.setAttribute('target', '_blank');
         a.setAttribute('rel', 'noopener');
-        a.textContent = LABELS[key] || 'View ↗';
+        if(!a.hasAttribute('data-keeptext')) a.textContent = LABELS[key] || 'View ↗';
         a.setAttribute('data-unlocked', '1');
       }
     });
