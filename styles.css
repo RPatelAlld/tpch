@@ -338,6 +338,11 @@ table.cmp td b{color:var(--graphite)}
 .pill.open{background:rgba(185,154,91,.14);color:var(--gold-deep);border:1px solid rgba(185,154,91,.42)}
 .pill.answered{background:rgba(32,54,46,.1);color:var(--forest);border:1px solid rgba(32,54,46,.32)}
 
+/* ---------- Ask flags (Collective asks) ---------- */
+.flag{flex:0 0 auto;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:5px 11px;border-radius:20px;font-weight:600;white-space:normal;line-height:1.4}
+.flag-warn{background:rgba(178,110,53,.12);color:#9a5324;border:1px solid rgba(178,110,53,.42)}
+.flag-note{background:rgba(32,54,46,.08);color:var(--forest);border:1px solid rgba(32,54,46,.28);text-transform:none;letter-spacing:.02em}
+
 /* ---------- Checklist ---------- */
 .checklist{list-style:none;padding:0;margin:0}
 .checklist li{position:relative;padding:13px 0 13px 36px;border-top:1px solid var(--line);font-size:15px;color:var(--graphite-soft);line-height:1.55}
