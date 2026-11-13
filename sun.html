@@ -127,7 +127,7 @@ header.nav{z-index:20}
         <button class="pbtn" id="labT" aria-pressed="true">Tower labels</button>
         <button class="pbtn" id="shT" aria-pressed="true">Shadows</button>
       </div></div>
-    <p class="pnote">Tower footprints are traced from the brochure masterplan and scaled from Tower 3's known unit sizes, so positions are within a few metres. Heights assume 42 floors at about 3 m each (≈132 m). North is up on the masterplan. Villas, clubhouses and the upcoming Forum Mall are shown flat. Treat times as ±10 minutes.</p>
+    <p class="pnote">Tower footprints are traced from the brochure masterplan and scaled from Tower 3's known unit sizes, so positions are within a few metres. Heights assume 42 floors at about 3 m each (≈132 m). True north is set about 1° clockwise of the masterplan's up, measured from satellite imagery. Villas, clubhouses and the upcoming Forum Mall are shown flat. Treat times as ±10 minutes.</p>
     <p class="pdisc">Unofficial owners' model for orientation only, not a Prestige document. The ground image is the brochure masterplan. Verify against your unit plan and a site visit.</p>
   </div>
 </aside>
@@ -164,6 +164,8 @@ const ground=new THREE.Mesh(new THREE.PlaneGeometry(G.w,G.h),new THREE.MeshStand
 ground.rotation.x=-Math.PI/2;ground.position.set(G.x0+G.w/2,0,G.y0+G.h/2);ground.receiveShadow=true;scene.add(ground);
 
 /* ---------- towers ---------- */
+/* True north is ~1° clockwise of 'up' on the brochure masterplan (site grid measured against Google satellite imagery, Nov 2026). */
+const NORTH_OFF=1.0;
 const FLOOR=3.0, GF=4.5, NFL=42, TOP=GF+(NFL-1)*FLOOR+4;
 function facadeTex(wall,win,slab){const c=document.createElement("canvas");c.width=64;c.height=64;const g=c.getContext("2d");
   g.fillStyle=wall;g.fillRect(0,0,64,64);g.fillStyle=win;g.fillRect(14,14,36,34);g.fillStyle=slab;g.fillRect(0,58,64,6);
@@ -197,8 +199,8 @@ labels.add(sprite('Forum Mall (upcoming)',330,25,-110,false));
 const pick=new THREE.Mesh(new THREE.SphereGeometry(2,20,14),new THREE.MeshBasicMaterial({color:0xD07A1C}));pick.visible=false;scene.add(pick);
 /* ---------- compass ---------- */
 (function(){const g=new THREE.Group();const m=new THREE.MeshBasicMaterial({color:0xD07A1C});
-  const sh=new THREE.Shape();sh.moveTo(0,-26);sh.lineTo(9,10);sh.lineTo(0,4);sh.lineTo(-9,10);sh.closePath();
-  const a=new THREE.Mesh(new THREE.ShapeGeometry(sh),m);a.rotation.x=-Math.PI/2;g.add(a);g.position.set(G.x0+G.w-40,0.5,G.y0+40);scene.add(g);
+  const sh=new THREE.Shape();sh.moveTo(0,26);sh.lineTo(9,-10);sh.lineTo(0,-4);sh.lineTo(-9,-10);sh.closePath();
+  const a=new THREE.Mesh(new THREE.ShapeGeometry(sh),m);a.rotation.x=-Math.PI/2;g.add(a);g.position.set(G.x0+G.w-40,0.5,G.y0+40);g.rotation.y=-NORTH_OFF*Math.PI/180;scene.add(g);
   labels.add(sprite('N',G.x0+G.w-40,10,G.y0+8,true));})();
 
 /* ---------- lights ---------- */
@@ -220,7 +222,7 @@ function solar(m,d,hr){const n=doy(m,d),g=2*Math.PI/365*(n-1+(hr-12)/24);
   const az=((Math.atan2(Math.sin(ha),Math.cos(ha)*Math.sin(phi)-Math.tan(dec)*Math.cos(phi))/D2R+180)+360)%360;return {alt,az,dec,eq};}
 function riseSet(m,d){const {dec,eq}=solar(m,d,12),phi=LAT*D2R;const ha=Math.acos(Math.cos(90.833*D2R)/(Math.cos(phi)*Math.cos(dec))-Math.tan(phi)*Math.tan(dec))/D2R;
   return [(720-4*(LON+ha)-eq+TZ*60)/60,(720-4*(LON-ha)-eq+TZ*60)/60];}
-const sunDir=(s)=>{const a=s.az*D2R,h=s.alt*D2R;return new THREE.Vector3(Math.sin(a)*Math.cos(h),Math.sin(h),-Math.cos(a)*Math.cos(h));};
+const sunDir=(s)=>{const a=(s.az+NORTH_OFF)*D2R,h=s.alt*D2R;return new THREE.Vector3(Math.sin(a)*Math.cos(h),Math.sin(h),-Math.cos(a)*Math.cos(h));};
 const hm=v=>{let h=Math.floor(v),m=Math.round((v-h)*60);if(m===60){h++;m=0}return `${h}:${String(m).padStart(2,'0')}`;};
 const dur=v=>{const m=Math.round(v*60);return m<60?`${m} min`:`${Math.floor(m/60)} h ${String(m%60).padStart(2,'0')} m`;};
 const compass=a=>['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'][Math.round(((a%360)+360)%360/22.5)%16];
