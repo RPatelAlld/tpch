@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <!-- Google Analytics (GA4) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-R17JKPB0KC"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-R17JKPB0KC');
+  </script>
+  <title>3D Sun &amp; Shadow Model · TPCH Owners Hub</title>
+  <meta name="description" content="An interactive 3D model of all 13 towers of The Prestige City Hyderabad with live sun and shadows. Pick a month and time, then tap any tower face to see when direct sun reaches it." />
+  <link rel="canonical" href="https://tpch.in/sun.html" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <meta name="theme-color" content="#20362E" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="TPCH Owners Hub" />
+  <meta property="og:title" content="3D Sun & Shadow Model · The Prestige City Hyderabad" />
+  <meta property="og:description" content="All 13 towers in 3D with live sun and shadows. Tap any tower face to see when direct sun reaches it, month by month." />
+  <meta property="og:url" content="https://tpch.in/sun.html" />
+  <meta property="og:image" content="https://tpch.in/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+/* Layout: full-bleed 3D site model; collapsible control sheet top-left; selected-spot readout bottom-right. Owners Hub palette. */
+:root{
+  --bg:#F6F3ED; --panel:#FBFAF6; --ink:#1D1D1B; --muted:#6B6B64; --line:rgba(29,29,27,.14);
+  --accent:#9B7F45; --accent-soft:#F1E7D3; --teal:#20362E;
+  --f-display:'Cormorant Garamond',Georgia,serif;
+  --f-body:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --f-mono:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+}
+:root{padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+body{margin:0}
+.back{display:inline-block;font:600 .8rem var(--f-body);color:var(--teal);text-decoration:none;margin-bottom:2px}
+.back:hover{text-decoration:underline}
+.disc{font-size:.74rem;color:var(--muted);margin:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font:15px/1.45 var(--f-body);overflow:hidden}
+#c{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;outline:none}
+.panel{position:fixed;top:calc(env(safe-area-inset-top,0px) + 12px);left:max(12px,env(safe-area-inset-left,0px));width:min(320px,calc(100vw - 24px));max-height:calc(100% - 24px - env(safe-area-inset-top,0px));overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.18);z-index:5}
+.head{display:flex;align-items:center;gap:10px;padding:12px 14px}
+.head h1{font:600 1.45rem var(--f-display);line-height:1.05;margin:0;flex:1}
+.head small{display:block;font:500 .68rem var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.collapse{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;width:34px;height:30px;cursor:pointer;font:700 1rem var(--f-body)}
+.body{display:grid;gap:14px;padding:0 14px 14px}
+.panel.min .body{display:none}
+.ctl{display:grid;gap:6px}
+.lbl{font:500 .7rem var(--f-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.seg{display:flex;flex-wrap:wrap;gap:5px}
+.seg button,.btn{font:600 .84rem var(--f-body);color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:5px 11px;cursor:pointer}
+.seg button[aria-pressed="true"],.btn[aria-pressed="true"]{background:var(--teal);border-color:var(--teal);color:var(--panel)}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+select{font:600 .85rem var(--f-body);color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:5px 8px}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.read{font:500 .78rem var(--f-mono);color:var(--muted)}
+.note{font-size:.8rem;color:var(--muted);border-top:1px solid var(--line);padding-top:10px;margin:0}
+.spot{position:fixed;right:max(12px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 12px);width:min(340px,calc(100vw - 24px));background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.18);padding:12px 14px;display:grid;gap:8px;z-index:5}
+.spot h2{margin:0;font:700 1rem var(--f-display)}
+.big{font:700 1.05rem var(--f-body)}
+.big b{color:var(--accent)}
+.months{display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
+.months div{border:1px solid var(--line);border-radius:6px;padding:3px 4px;text-align:center;font:500 .7rem var(--f-mono);font-variant-numeric:tabular-nums}
+.months div span{display:block;color:var(--muted);font-size:.62rem;letter-spacing:.05em;text-transform:uppercase}
+.months div.cur{border-color:var(--accent);background:var(--accent-soft)}
+.hint{font-size:.78rem;color:var(--muted);margin:0}
+.err{position:fixed;inset:auto 16px 16px 16px;background:var(--accent-soft);color:var(--ink);padding:12px 14px;border-radius:10px;z-index:9}
+@media (max-width:700px){.spot{left:max(12px,env(safe-area-inset-left,0px));width:auto}}
+</style>
+
+</head>
+<body>
+<canvas id="c" tabindex="0" aria-label="3D model of The Prestige City with live sunlight"></canvas>
+
+<aside class="panel" id="panel">
+  <div class="head">
+    <h1><a class="back" href="explore.html">← Explore</a><br>The Prestige City<small>13 towers · 42 floors · Rajendra Nagar</small></h1>
+    <button class="collapse" id="collapse" aria-label="Collapse controls" aria-expanded="true">–</button>
+  </div>
+  <div class="body">
+    <div class="ctl"><span class="lbl">View</span>
+      <div class="seg" id="viewSeg">
+        <button id="v-over" data-v="over" aria-pressed="true">Overview</button>
+        <button id="v-lake" data-v="lake" aria-pressed="false">From the lake</button>
+        <button id="v-plan" data-v="plan" aria-pressed="false">Plan</button>
+        <button id="v-t3" data-v="t3" aria-pressed="false">East side</button>
+        <button id="v-street" data-v="street" aria-pressed="false">Street level</button>
+      </div></div>
+    <div class="ctl"><span class="lbl">Sunlight · 21st of</span>
+      <div class="row">
+        <select id="mon" aria-label="Month">
+          <option value="1">January</option><option value="2">February</option><option value="3">March</option><option value="4">April</option><option value="5">May</option><option value="6">June</option>
+          <option value="7">July</option><option value="8">August</option><option value="9">September</option><option value="10">October</option><option value="11" selected>November</option><option value="12">December</option>
+        </select>
+        <button class="btn" id="play" aria-pressed="false">Play the day</button>
+      </div>
+      <label class="lbl" for="time">Time · <span id="tLbl">8:00</span> IST</label>
+      <input type="range" id="time" min="5.5" max="19" step="0.0833" value="8">
+      <span class="read" id="sunRead"></span></div>
+    <div class="ctl"><span class="lbl">Show</span>
+      <div class="seg">
+        <button class="btn" id="labT" aria-pressed="true">Tower labels</button>
+        <button class="btn" id="shT" aria-pressed="true">Shadows</button>
+      </div></div>
+    <p class="note">Tower footprints are traced from the brochure masterplan and scaled from Tower 3's known unit sizes, so positions are within a few metres. Heights assume 42 floors at about 3 m each (≈132 m). North is up on the masterplan. Villas, clubhouses and the upcoming Forum Mall are shown flat. Treat times as ±10 minutes.</p>
+    <p class="disc">Unofficial owners' model for orientation only, not a Prestige document. The ground image is the brochure masterplan. Verify against your unit plan and a site visit.</p>
+  </div>
+</aside>
+
+<section class="spot" aria-live="polite">
+  <h2 id="spotTitle">Check a flat's sun</h2>
+  <div class="big" id="spotToday"></div>
+  <div class="months" id="spotMonths"></div>
+  <p class="hint" id="spotHint">Click or tap any tower face, at the floor you want. You'll see when direct sun reaches it, after shadows from the other towers.</p>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(function(){
+if(!window.THREE){document.body.insertAdjacentHTML('beforeend','<div class="err">The 3D library could not load. Check your connection and reload the page.</div>');return;}
+const $=id=>document.getElementById(id);
+const SITE={"towers":{"1":{"boxes":[[187.91,-226.18,8.6,1.72],[187.91,-224.46,12.04,1.72],[187.91,-210.7,25.8,1.72],[187.91,-196.94,27.52,3.44],[187.91,-179.74,25.8,1.72],[187.91,-165.98,25.8,1.72],[189.63,-222.74,10.32,1.72],[189.63,-221.02,8.6,1.72],[189.63,-219.3,27.52,3.44],[189.63,-208.98,25.8,6.88],[189.63,-193.5,25.8,1.72],[189.63,-191.78,24.08,5.16],[189.63,-181.46,24.08,1.72],[189.63,-178.02,24.08,1.72],[189.63,-176.3,25.8,1.72],[189.63,-174.58,24.08,3.44],[189.63,-164.26,24.08,1.72],[189.63,-162.54,10.32,1.72],[189.63,-160.82,8.6,1.72],[189.63,-159.1,10.32,1.72],[191.35,-212.42,5.16,1.72],[193.07,-227.9,1.72,1.72],[193.07,-202.1,3.44,1.72],[193.07,-167.7,5.16,1.72],[193.07,-157.38,1.72,1.72],[194.79,-186.62,1.72,1.72],[194.79,-183.18,1.72,1.72],[199.95,-221.02,15.48,1.72],[199.95,-212.42,6.88,1.72],[199.95,-202.1,6.88,1.72],[199.95,-186.62,5.16,1.72],[199.95,-167.7,3.44,1.72],[201.67,-215.86,3.44,3.44],[201.67,-200.38,3.44,3.44],[201.67,-184.9,3.44,3.44],[203.39,-162.54,10.32,1.72],[205.11,-160.82,8.6,1.72],[205.11,-159.1,6.88,1.72],[206.83,-224.46,10.32,3.44],[206.83,-167.7,3.44,1.72],[208.55,-212.42,3.44,1.72],[208.55,-202.1,3.44,1.72],[208.55,-157.38,1.72,1.72],[210.27,-186.62,3.44,1.72],[211.99,-227.9,1.72,1.72],[213.71,-226.18,3.44,1.72],[215.43,-227.9,1.72,1.72]],"bb":[187.9,-227.9,216.7,-155.7]},"2":{"boxes":[[188.77,-116.53,10.32,3.44],[188.77,-113.09,32.68,6.88],[188.77,-101.05,30.96,1.72],[188.77,-99.33,32.68,1.72],[188.77,-97.61,12.04,1.72],[188.77,-95.89,10.32,5.16],[190.49,-128.57,30.96,5.16],[190.49,-123.41,8.6,1.72],[190.49,-85.57,12.04,1.72],[190.49,-82.13,13.76,1.72],[190.49,-80.41,12.04,3.44],[192.21,-132.01,1.72,1.72],[192.21,-130.29,10.32,1.72],[192.21,-118.25,5.16,1.72],[192.21,-106.21,1.72,1.72],[192.21,-102.77,5.16,1.72],[192.21,-83.85,29.24,1.72],[192.21,-76.97,1.72,1.72],[193.93,-75.25,3.44,1.72],[195.65,-132.01,1.72,1.72],[195.65,-121.69,1.72,1.72],[195.65,-76.97,3.44,1.72],[199.09,-132.01,3.44,1.72],[200.81,-123.41,18.92,1.72],[200.81,-106.21,6.88,3.44],[200.81,-102.77,8.6,1.72],[204.25,-121.69,5.16,3.44],[204.25,-116.53,17.2,3.44],[205.97,-118.25,3.44,1.72],[205.97,-82.13,15.48,3.44],[207.69,-78.69,13.76,3.44],[209.41,-132.01,3.44,3.44],[209.41,-97.61,3.44,1.72],[209.41,-95.89,12.04,3.44],[209.41,-75.25,1.72,1.72],[211.13,-92.45,10.32,1.72],[211.13,-85.57,10.32,1.72],[212.85,-133.73,3.44,1.72],[212.85,-118.25,3.44,1.72],[212.85,-102.77,1.72,1.72],[212.85,-90.73,3.44,1.72],[212.85,-87.29,3.44,1.72],[212.85,-75.25,3.44,1.72],[214.57,-132.01,1.72,1.72],[214.57,-106.21,1.72,1.72],[214.57,-97.61,6.88,1.72],[218.01,-132.01,3.44,3.44]],"bb":[188.8,-133.7,221,-73.5]},"3":{"boxes":[[203.39,-51.17,6.88,1.72],[203.39,-49.45,24.08,5.16],[203.39,-44.29,6.88,1.72],[203.39,-37.41,24.08,10.32],[203.39,-20.21,24.08,6.88],[203.39,-6.45,24.08,6.88],[203.39,7.31,20.64,3.44],[203.39,10.75,10.32,1.72],[203.39,12.47,8.6,5.16],[205.11,-23.65,3.44,1.72],[205.11,-21.93,20.64,1.72],[205.11,-13.33,3.44,1.72],[205.11,-8.17,5.16,1.72],[205.11,0.43,18.92,1.72],[206.83,-52.89,3.44,1.72],[206.83,-42.57,1.72,1.72],[206.83,-39.13,1.72,1.72],[206.83,2.15,1.72,1.72],[206.83,17.63,1.72,1.72],[210.27,-23.65,13.76,1.72],[211.99,-44.29,15.48,1.72],[211.99,-42.57,5.16,1.72],[211.99,-39.13,5.16,1.72],[211.99,-13.33,6.88,1.72],[211.99,-8.17,12.04,1.72],[213.71,-40.85,3.44,1.72],[213.71,-27.09,3.44,1.72],[213.71,-25.37,1.72,1.72],[213.71,-9.89,3.44,1.72],[215.43,10.75,8.6,6.88],[218.87,-51.17,8.6,1.72],[220.59,-42.57,3.44,1.72],[220.59,-13.33,3.44,1.72],[220.59,2.15,3.44,1.72],[222.31,-39.13,1.72,1.72],[222.31,-27.09,1.72,1.72],[224.03,-52.89,1.72,1.72],[225.75,-8.17,1.72,1.72]],"bb":[203.4,-52.9,227,18.9]},"4":{"boxes":[[108.36,0.43,12.04,3.44],[108.36,3.87,13.76,6.88],[108.36,17.63,13.76,5.16],[108.36,22.79,12.04,6.88],[111.8,10.75,3.44,1.72],[111.8,29.67,3.44,1.72],[113.52,-1.29,3.44,1.72],[122.12,14.19,53.32,3.44],[123.84,12.47,1.72,1.72],[125.56,17.63,10.32,5.16],[125.56,22.79,12.04,3.44],[125.56,26.23,10.32,3.44],[129,2.15,6.88,1.72],[129,3.87,18.92,3.44],[130.72,0.43,5.16,1.72],[130.72,7.31,15.48,1.72],[135.88,9.03,3.44,1.72],[137.6,10.75,1.72,3.44],[139.32,-1.29,1.72,1.72],[139.32,2.15,8.6,1.72],[141.04,0.43,6.88,1.72],[141.04,17.63,10.32,1.72],[141.04,19.35,8.6,1.72],[141.04,21.07,10.32,5.16],[141.04,26.23,8.6,1.72],[142.76,9.03,1.72,1.72],[142.76,27.95,6.88,1.72],[144.48,12.47,1.72,1.72],[154.8,0.43,8.6,1.72],[154.8,2.15,24.08,5.16],[154.8,17.63,10.32,10.32],[156.52,7.31,12.04,1.72],[156.52,27.95,8.6,1.72],[158.24,-1.29,5.16,1.72],[163.4,9.03,3.44,1.72],[163.4,10.75,1.72,1.72],[163.4,12.47,3.44,1.72],[166.84,-1.29,12.04,3.44],[168.56,24.51,12.04,1.72],[170.28,-3.01,3.44,1.72],[170.28,7.31,8.6,1.72],[170.28,9.03,3.44,1.72],[170.28,17.63,5.16,1.72],[170.28,19.35,8.6,1.72],[170.28,21.07,10.32,3.44],[170.28,26.23,10.32,1.72],[170.28,27.95,8.6,1.72]],"bb":[108.4,-3,180.2,30.5]},"5":{"boxes":[[104.92,-33.97,27.52,1.72],[106.64,-78.69,3.44,3.44],[106.64,-75.25,27.52,3.44],[106.64,-64.93,5.16,1.72],[106.64,-63.21,6.88,1.72],[106.64,-61.49,8.6,1.72],[106.64,-59.77,25.8,5.16],[106.64,-49.45,25.8,3.44],[106.64,-46.01,8.6,1.72],[106.64,-44.29,6.88,3.44],[106.64,-32.25,24.08,1.72],[106.64,-30.53,10.32,3.44],[106.64,-27.09,3.44,1.72],[108.36,-71.81,24.08,1.72],[108.36,-40.85,5.16,1.72],[108.36,-35.69,12.04,1.72],[110.08,-70.09,3.44,1.72],[110.08,-25.37,5.16,1.72],[111.8,-76.97,5.16,1.72],[111.8,-23.65,1.72,1.72],[113.52,-80.41,3.44,1.72],[113.52,-27.09,3.44,1.72],[115.24,-78.69,1.72,1.72],[115.24,-54.61,6.88,5.16],[116.96,-70.09,5.16,1.72],[116.96,-61.49,15.48,1.72],[118.68,-68.37,3.44,3.44],[118.68,-64.93,10.32,1.72],[118.68,-63.21,13.76,1.72],[118.68,-46.01,13.76,5.16],[118.68,-40.85,12.04,1.72],[118.68,-39.13,1.72,3.44],[122.12,-30.53,6.88,5.16],[123.84,-78.69,6.88,3.44],[125.56,-35.69,5.16,1.72],[125.56,-25.37,3.44,1.72],[127.28,-80.41,6.88,1.72],[127.28,-54.61,1.72,1.72]],"bb":[104.9,-80.4,134.2,-23.2]},"6":{"boxes":[[5.59,-60.2,12.04,5.16],[7.31,-77.4,10.32,3.44],[7.31,-73.96,6.88,1.72],[7.31,-72.24,12.04,3.44],[7.31,-55.04,10.32,5.16],[9.03,-68.8,5.16,1.72],[9.03,-61.92,8.6,1.72],[14.19,-79.12,1.72,1.72],[14.19,-63.64,5.16,1.72],[15.91,-73.96,3.44,1.72],[17.63,-68.8,1.72,1.72],[19.35,-65.36,51.6,1.72],[21.07,-63.64,51.6,1.72],[22.79,-61.92,10.32,12.04],[26.23,-77.4,6.88,1.72],[26.23,-75.68,17.2,1.72],[26.23,-73.96,13.76,1.72],[27.95,-79.12,3.44,1.72],[27.95,-72.24,17.2,1.72],[33.11,-70.52,5.16,1.72],[33.11,-67.08,3.44,1.72],[34.83,-68.8,1.72,1.72],[36.55,-77.4,8.6,1.72],[36.55,-61.92,8.6,1.72],[36.55,-60.2,10.32,10.32],[38.27,-79.12,5.16,1.72],[39.99,-70.52,1.72,1.72],[50.31,-61.92,12.04,1.72],[50.31,-56.76,10.32,3.44],[52.03,-79.12,8.6,1.72],[52.03,-77.4,24.08,6.88],[52.03,-60.2,8.6,3.44],[52.03,-53.32,8.6,3.44],[55.47,-80.84,5.16,1.72],[57.19,-70.52,1.72,1.72],[60.63,-70.52,3.44,1.72],[60.63,-67.08,3.44,1.72],[62.35,-68.8,1.72,1.72],[64.07,-80.84,12.04,3.44],[65.79,-82.56,3.44,1.72],[65.79,-61.92,6.88,1.72],[65.79,-60.2,10.32,10.32],[67.51,-70.52,3.44,1.72],[74.39,-49.88,1.72,1.72]],"bb":[5.6,-82.6,75.7,-49.4]},"7":{"boxes":[[-93.31,-80.84,10.32,3.44],[-93.31,-61.92,10.32,10.32],[-91.59,-77.4,10.32,3.44],[-91.59,-73.96,12.04,1.72],[-91.59,-72.24,10.32,1.72],[-88.15,-82.56,1.72,1.72],[-88.15,-63.64,5.16,1.72],[-84.71,-65.36,43,1.72],[-81.27,-68.8,1.72,3.44],[-79.55,-63.64,48.16,1.72],[-79.55,-58.48,10.32,1.72],[-79.55,-56.76,12.04,1.72],[-77.83,-61.92,8.6,3.44],[-77.83,-55.04,8.6,3.44],[-76.11,-79.12,5.16,3.44],[-76.11,-75.68,18.92,1.72],[-74.39,-72.24,17.2,1.72],[-70.95,-73.96,13.76,1.72],[-69.23,-70.52,5.16,1.72],[-69.23,-68.8,3.44,1.72],[-69.23,-67.08,5.16,1.72],[-65.79,-77.4,8.6,1.72],[-65.79,-56.76,12.04,1.72],[-64.07,-80.84,1.72,1.72],[-64.07,-61.92,10.32,1.72],[-64.07,-60.2,8.6,3.44],[-64.07,-55.04,10.32,1.72],[-64.07,-53.32,3.44,1.72],[-62.35,-70.52,3.44,1.72],[-58.91,-53.32,3.44,1.72],[-50.31,-79.12,10.32,1.72],[-50.31,-77.4,24.08,1.72],[-50.31,-73.96,24.08,1.72],[-50.31,-72.24,15.48,1.72],[-50.31,-61.92,10.32,1.72],[-50.31,-58.48,10.32,5.16],[-48.59,-80.84,8.6,1.72],[-48.59,-75.68,22.36,1.72],[-48.59,-60.2,8.6,1.72],[-48.59,-53.32,8.6,1.72],[-46.87,-70.52,5.16,1.72],[-41.71,-82.56,1.72,1.72],[-38.27,-70.52,3.44,5.16],[-38.27,-65.36,8.6,1.72],[-36.55,-61.92,6.88,1.72],[-36.55,-58.48,13.76,1.72],[-36.55,-56.76,12.04,1.72],[-36.55,-55.04,10.32,5.16],[-34.83,-79.12,8.6,1.72],[-34.83,-60.2,12.04,1.72],[-34.83,-49.88,8.6,1.72],[-33.11,-80.84,6.88,1.72],[-31.39,-82.56,5.16,1.72],[-31.39,-72.24,5.16,1.72]],"bb":[-95,-82.6,-24.1,-49]},"8":{"boxes":[[-195.65,-23.65,15.48,1.72],[-195.65,-16.77,17.2,1.72],[-195.65,-15.05,15.48,1.72],[-195.65,-6.45,3.44,1.72],[-195.65,-4.73,15.48,1.72],[-195.65,0.43,15.48,3.44],[-193.93,-21.93,13.76,1.72],[-193.93,-20.21,20.64,3.44],[-193.93,-3.01,18.92,1.72],[-192.21,-13.33,6.88,1.72],[-192.21,-1.29,15.48,1.72],[-190.49,-6.45,10.32,1.72],[-190.49,3.87,3.44,1.72],[-176.73,-35.69,12.04,1.72],[-176.73,-33.97,15.48,1.72],[-176.73,-28.81,17.2,3.44],[-176.73,-16.77,5.16,1.72],[-176.73,5.59,17.2,3.44],[-176.73,12.47,17.2,3.44],[-176.73,15.91,15.48,1.72],[-175.01,-32.25,15.48,3.44],[-175.01,9.03,15.48,3.44],[-173.29,-15.05,34.4,1.72],[-173.29,-13.33,15.48,1.72],[-173.29,-11.61,13.76,5.16],[-173.29,-6.45,1.72,1.72],[-169.85,-6.45,12.04,1.72],[-164.69,-20.21,25.8,5.16],[-162.97,-4.73,24.08,1.72],[-161.25,-25.37,1.72,1.72],[-161.25,-3.01,22.36,1.72],[-161.25,2.15,3.44,1.72],[-159.53,-23.65,1.72,1.72],[-159.53,-21.93,20.64,1.72],[-159.53,-1.29,20.64,1.72],[-159.53,0.43,1.72,1.72],[-156.09,0.43,17.2,1.72],[-154.37,-23.65,12.04,1.72],[-154.37,-6.45,3.44,1.72],[-152.65,2.15,13.76,1.72],[-150.93,-13.33,5.16,1.72],[-150.93,3.87,3.44,1.72],[-149.21,-6.45,10.32,1.72],[-140.61,-23.65,1.72,1.72]],"bb":[-195.7,-35.7,-138.9,17.6]},"9":{"boxes":[[-178.45,-100.19,15.48,3.44],[-178.45,-91.59,15.48,3.44],[-178.45,-82.99,15.48,1.72],[-178.45,-81.27,17.2,1.72],[-178.45,-76.11,18.92,1.72],[-178.45,-74.39,15.48,1.72],[-178.45,-72.67,1.72,1.72],[-176.73,-96.75,20.64,5.16],[-176.73,-79.55,20.64,1.72],[-176.73,-77.83,18.92,1.72],[-175.01,-72.67,6.88,1.72],[-159.53,-64.07,17.2,3.44],[-157.81,-112.23,3.44,1.72],[-157.81,-108.79,3.44,1.72],[-157.81,-107.07,15.48,5.16],[-157.81,-70.95,15.48,5.16],[-157.81,-65.79,8.6,1.72],[-156.09,-110.51,8.6,1.72],[-156.09,-91.59,15.48,1.72],[-156.09,-89.87,12.04,1.72],[-156.09,-88.15,13.76,5.16],[-156.09,-82.99,1.72,1.72],[-156.09,-60.63,12.04,1.72],[-154.37,-101.91,3.44,1.72],[-150.93,-108.79,8.6,1.72],[-147.49,-96.75,25.8,1.72],[-147.49,-95.03,18.92,1.72],[-147.49,-93.31,25.8,1.72],[-147.49,-82.99,25.8,1.72],[-145.77,-110.51,1.72,1.72],[-145.77,-81.27,24.08,1.72],[-145.77,-79.55,17.2,1.72],[-145.77,-65.79,5.16,1.72],[-144.05,-101.91,1.72,1.72],[-142.33,-100.19,1.72,1.72],[-142.33,-98.47,20.64,1.72],[-142.33,-89.87,1.72,1.72],[-142.33,-77.83,13.76,1.72],[-142.33,-76.11,20.64,1.72],[-142.33,-74.39,1.72,3.44],[-137.17,-100.19,13.76,1.72],[-137.17,-91.59,15.48,1.72],[-137.17,-89.87,8.6,1.72],[-137.17,-74.39,15.48,1.72],[-135.45,-72.67,6.88,1.72],[-125.13,-95.03,3.44,1.72],[-125.13,-89.87,3.44,1.72],[-125.13,-79.55,3.44,3.44]],"bb":[-178.4,-112.2,-121.7,-58.5]},"10":{"boxes":[[-111.8,-158.67,10.32,3.44],[-111.8,-155.23,12.04,3.44],[-111.8,-151.79,41.28,3.44],[-111.8,-143.19,41.28,1.72],[-111.8,-141.47,13.76,3.44],[-111.8,-138.03,12.04,1.72],[-111.8,-136.31,10.32,1.72],[-110.08,-134.59,8.6,3.44],[-108.36,-148.35,3.44,1.72],[-103.2,-148.35,32.68,1.72],[-99.76,-146.63,15.48,3.44],[-98.04,-167.27,3.44,1.72],[-98.04,-129.43,13.76,3.44],[-96.32,-168.99,1.72,1.72],[-96.32,-163.83,12.04,3.44],[-96.32,-160.39,6.88,1.72],[-96.32,-131.15,8.6,1.72],[-96.32,-125.99,12.04,1.72],[-96.32,-124.27,10.32,5.16],[-94.6,-119.11,3.44,1.72],[-92.88,-165.55,8.6,1.72],[-89.44,-141.47,18.92,1.72],[-87.72,-160.39,3.44,1.72],[-87.72,-139.75,17.2,1.72],[-86,-158.67,15.48,6.88],[-86,-138.03,15.48,5.16],[-86,-132.87,12.04,1.72],[-86,-131.15,1.72,1.72],[-72.24,-132.87,1.72,1.72]],"bb":[-111.8,-169,-71,-118.3]},"11":{"boxes":[[-47.3,-148.35,12.04,5.16],[-45.58,-163.83,10.32,1.72],[-45.58,-162.11,12.04,5.16],[-45.58,-156.95,1.72,1.72],[-45.58,-143.19,10.32,1.72],[-45.58,-139.75,10.32,1.72],[-43.86,-167.27,5.16,1.72],[-43.86,-165.55,8.6,1.72],[-43.86,-141.47,8.6,1.72],[-40.42,-150.07,5.16,1.72],[-38.7,-151.79,5.16,1.72],[-36.98,-167.27,1.72,1.72],[-30.1,-165.55,8.6,3.44],[-30.1,-151.79,49.88,3.44],[-30.1,-148.35,10.32,1.72],[-30.1,-146.63,8.6,3.44],[-30.1,-143.19,10.32,3.44],[-30.1,-139.75,6.88,1.72],[-28.38,-162.11,18.92,5.16],[-21.5,-156.95,3.44,1.72],[-21.5,-153.51,3.44,1.72],[-19.78,-155.23,1.72,1.72],[-18.06,-163.83,8.6,1.72],[-18.06,-144.91,12.04,3.44],[-16.34,-148.35,8.6,1.72],[-16.34,-146.63,10.32,1.72],[-16.34,-141.47,10.32,3.44],[-14.62,-165.55,5.16,1.72],[-14.62,-156.95,1.72,1.72],[-6.02,-165.55,12.04,1.72],[-6.02,-163.83,25.8,5.16],[-4.3,-158.67,24.08,1.72],[-4.3,-148.35,12.04,1.72],[-2.58,-167.27,6.88,1.72],[-2.58,-146.63,10.32,8.6],[4.3,-168.99,1.72,1.72],[6.02,-156.95,3.44,5.16],[9.46,-167.27,10.32,3.44],[11.18,-148.35,6.88,1.72],[11.18,-146.63,12.04,1.72],[11.18,-144.91,10.32,8.6],[12.9,-168.99,6.88,1.72],[12.9,-156.95,1.72,1.72],[12.9,-136.31,8.6,1.72]],"bb":[-47.3,-169,21.9,-135]},"12":{"boxes":[[45.58,-192.64,1.72,1.72],[45.58,-190.92,8.6,1.72],[45.58,-189.2,27.52,1.72],[45.58,-187.48,6.88,1.72],[45.58,-185.76,20.64,1.72],[45.58,-184.04,8.6,1.72],[45.58,-177.16,6.88,1.72],[45.58,-175.44,25.8,5.16],[45.58,-170.28,18.92,1.72],[45.58,-163.4,25.8,3.44],[45.58,-159.96,8.6,1.72],[45.58,-158.24,6.88,5.16],[47.3,-178.88,5.16,1.72],[47.3,-168.56,3.44,1.72],[47.3,-165.12,3.44,1.72],[47.3,-149.64,10.32,1.72],[47.3,-147.92,20.64,3.44],[47.3,-144.48,6.88,1.72],[47.3,-142.76,8.6,3.44],[49.02,-139.32,3.44,1.72],[50.74,-192.64,3.44,1.72],[54.18,-187.48,5.16,1.72],[54.18,-168.56,6.88,1.72],[54.18,-166.84,5.16,1.72],[54.18,-165.12,6.88,1.72],[55.9,-184.04,3.44,1.72],[55.9,-159.96,15.48,1.72],[57.62,-182.32,3.44,3.44],[57.62,-178.88,10.32,1.72],[57.62,-177.16,6.88,1.72],[57.62,-158.24,13.76,1.72],[57.62,-156.52,12.04,3.44],[59.34,-149.64,6.88,1.72],[59.34,-144.48,8.6,3.44],[61.06,-190.92,12.04,1.72],[61.06,-187.48,12.04,1.72],[61.06,-184.04,1.72,1.72],[61.06,-141.04,6.88,1.72],[62.78,-139.32,5.16,1.72],[64.5,-184.04,1.72,1.72],[66.22,-177.16,3.44,1.72],[66.22,-170.28,1.72,1.72],[67.94,-194.36,1.72,1.72],[67.94,-192.64,5.16,1.72],[67.94,-185.76,5.16,1.72],[67.94,-184.04,1.72,1.72],[69.66,-196.08,3.44,1.72],[69.66,-170.28,1.72,1.72],[71.38,-194.36,1.72,1.72]],"bb":[43.9,-196.1,72.2,-138]},"13":{"boxes":[[98.47,-159.1,12.04,3.44],[100.19,-176.3,10.32,3.44],[100.19,-172.86,12.04,6.88],[100.19,-155.66,10.32,6.88],[103.63,-178.02,1.72,1.72],[105.35,-160.82,5.16,1.72],[108.79,-178.02,1.72,1.72],[110.51,-165.98,1.72,1.72],[110.51,-162.54,53.32,1.72],[113.95,-160.82,49.88,1.72],[113.95,-155.66,10.32,1.72],[115.67,-176.3,3.44,1.72],[115.67,-174.58,8.6,1.72],[115.67,-172.86,20.64,3.44],[115.67,-169.42,6.88,1.72],[115.67,-159.1,48.16,1.72],[115.67,-157.38,8.6,1.72],[115.67,-153.94,10.32,3.44],[115.67,-150.5,8.6,1.72],[117.39,-167.7,3.44,1.72],[122.55,-178.02,1.72,1.72],[124.27,-169.42,12.04,3.44],[125.99,-165.98,1.72,3.44],[127.71,-176.3,8.6,1.72],[127.71,-155.66,10.32,1.72],[127.71,-153.94,12.04,1.72],[129.43,-174.58,6.88,1.72],[129.43,-157.38,10.32,1.72],[129.43,-152.22,10.32,1.72],[129.43,-150.5,8.6,1.72],[139.75,-172.86,24.08,5.16],[141.47,-176.3,6.88,1.72],[141.47,-174.58,10.32,1.72],[141.47,-153.94,12.04,1.72],[143.19,-167.7,3.44,1.72],[143.19,-157.38,10.32,3.44],[143.19,-152.22,10.32,1.72],[143.19,-150.5,8.6,1.72],[148.35,-178.02,1.72,1.72],[148.35,-167.7,1.72,1.72],[151.79,-167.7,12.04,1.72],[151.79,-165.98,3.44,3.44],[153.51,-174.58,12.04,1.72],[155.23,-178.02,10.32,3.44],[156.95,-157.38,8.6,1.72],[156.95,-155.66,10.32,1.72],[156.95,-153.94,1.72,3.44],[156.95,-150.5,10.32,3.44],[158.67,-147.06,5.16,1.72],[160.39,-153.94,6.88,1.72],[162.11,-179.74,3.44,1.72],[162.11,-152.22,5.16,1.72],[165.55,-147.06,1.72,1.72]],"bb":[98.5,-179.7,167.3,-145.8]}},"ground":{"x0":-449.34999999999997,"y0":-273.05,"w":898.6999999999999,"h":546.1}};
+const GROUND_SRC="sun-ground.jpg";
+const canvas=$('c');let renderer;
+try{renderer=new THREE.WebGLRenderer({canvas,antialias:true});}catch(e){document.body.insertAdjacentHTML('beforeend','<div class="err">This device or browser has WebGL turned off, so the 3D model can\'t be shown.</div>');return;}
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.outputEncoding=THREE.sRGBEncoding;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.0;
+const scene=new THREE.Scene();scene.fog=new THREE.Fog(0xcfd9df,1400,4200);
+const camera=new THREE.PerspectiveCamera(45,1,1,8000);
+
+/* ---------- ground ---------- */
+const G=SITE.ground;
+const far=new THREE.Mesh(new THREE.PlaneGeometry(9000,9000),new THREE.MeshStandardMaterial({color:0x8E9A80,roughness:1}));
+far.rotation.x=-Math.PI/2;far.position.y=-0.2;far.receiveShadow=true;scene.add(far);
+const gtex=new THREE.TextureLoader().load(GROUND_SRC);gtex.encoding=THREE.sRGBEncoding;gtex.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(G.w,G.h),new THREE.MeshStandardMaterial({map:gtex,roughness:1}));
+ground.rotation.x=-Math.PI/2;ground.position.set(G.x0+G.w/2,0,G.y0+G.h/2);ground.receiveShadow=true;scene.add(ground);
+
+/* ---------- towers ---------- */
+const FLOOR=3.0, GF=4.5, NFL=42, TOP=GF+(NFL-1)*FLOOR+4;
+function facadeTex(wall,win,slab){const c=document.createElement("canvas");c.width=64;c.height=64;const g=c.getContext("2d");
+  g.fillStyle=wall;g.fillRect(0,0,64,64);g.fillStyle=win;g.fillRect(14,14,36,34);g.fillStyle=slab;g.fillRect(0,58,64,6);
+  const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.encoding=THREE.sRGBEncoding;t.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());return t;}
+const matT=new THREE.MeshStandardMaterial({map:facadeTex("#E6D7BF","#7D8C94","#CDBA9C"),roughness:.8});
+const matT3=new THREE.MeshStandardMaterial({map:facadeTex("#F0CFA0","#7D8C94","#D9AE72"),roughness:.8});
+const BAY=3.4;
+function uvBox(geo,w,h,d){const uv=geo.attributes.uv;const dims=[[d,h],[d,h],[0,0],[0,0],[w,h],[w,h]];
+  for(let f=0;f<6;f++)for(let i=0;i<4;i++){const k=f*4+i;const [fw,fh]=dims[f];
+    if(fw===0){uv.setXY(k,0.1,0.5);continue;}uv.setXY(k,uv.getX(k)*fw/BAY,uv.getY(k)*fh/FLOOR);}uv.needsUpdate=true;return geo;}
+const towerMeshes=[];const towerOf=new Map();
+for(const [k,t] of Object.entries(SITE.towers)){
+  const m=matT;
+  for(const [x,z,w,d] of t.boxes){
+    const b=new THREE.Mesh(uvBox(new THREE.BoxGeometry(w,TOP,d),w,TOP,d),m);b.position.set(x+w/2,TOP/2,z+d/2);
+    b.castShadow=true;b.receiveShadow=true;scene.add(b);towerMeshes.push(b);towerOf.set(b,k);
+  }
+  // roof parapet band
+}
+/* ---------- labels ---------- */
+const labels=new THREE.Group();scene.add(labels);
+function sprite(text,x,y,z,accent){const cv=document.createElement('canvas');cv.width=512;cv.height=128;const g=cv.getContext('2d');
+  g.fillStyle=accent?'rgba(208,122,28,.95)':'rgba(255,255,255,.92)';g.beginPath();g.roundRect?g.roundRect(8,8,496,112,30):g.rect(8,8,496,112);g.fill();
+  g.fillStyle=accent?'#fff':'#18232A';g.font='700 56px "Source Sans 3","Segoe UI",sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(text,256,68);
+  const t=new THREE.CanvasTexture(cv);t.encoding=THREE.sRGBEncoding;const s=new THREE.Sprite(new THREE.SpriteMaterial({map:t,depthTest:false,transparent:true}));
+  s.scale.set(40,10,1);s.position.set(x,y,z);s.renderOrder=10;return s;}
+for(const [k,t] of Object.entries(SITE.towers)){const [x0,z0,x1,z1]=t.bb;labels.add(sprite('T-'+String(k).padStart(2,'0'),(x0+x1)/2,TOP+12,(z0+z1)/2,false));}
+labels.add(sprite('Mulagund Lake',G.x0+70,25,40,false));
+labels.add(sprite('Forum Mall (upcoming)',330,25,-110,false));
+
+const pick=new THREE.Mesh(new THREE.SphereGeometry(2,20,14),new THREE.MeshBasicMaterial({color:0xD07A1C}));pick.visible=false;scene.add(pick);
+/* ---------- compass ---------- */
+(function(){const g=new THREE.Group();const m=new THREE.MeshBasicMaterial({color:0xD07A1C});
+  const sh=new THREE.Shape();sh.moveTo(0,-26);sh.lineTo(9,10);sh.lineTo(0,4);sh.lineTo(-9,10);sh.closePath();
+  const a=new THREE.Mesh(new THREE.ShapeGeometry(sh),m);a.rotation.x=-Math.PI/2;g.add(a);g.position.set(G.x0+G.w-40,0.5,G.y0+40);scene.add(g);
+  labels.add(sprite('N',G.x0+G.w-40,10,G.y0+8,true));})();
+
+/* ---------- lights ---------- */
+const hemi=new THREE.HemisphereLight(0xe6edf2,0xa7a08f,0.45);scene.add(hemi);
+const sun=new THREE.DirectionalLight(0xfff1dc,2.4);sun.castShadow=true;
+const MS=Math.min(4096,renderer.capabilities.maxTextureSize);sun.shadow.mapSize.set(MS,MS);
+Object.assign(sun.shadow.camera,{left:-520,right:520,top:520,bottom:-520,near:10,far:3000});sun.shadow.bias=-0.0004;sun.shadow.normalBias=0.6;
+sun.target.position.set(0,0,-60);scene.add(sun);scene.add(sun.target);
+
+/* ---------- sun position (NOAA; 17.31 N, 78.42 E; IST) ---------- */
+const LAT=17.3066,LON=78.4175,TZ=5.5,D2R=Math.PI/180;
+const doy=(m,d)=>Math.round((Date.UTC(2026,m-1,d)-Date.UTC(2026,0,0))/864e5);
+function solar(m,d,hr){const n=doy(m,d),g=2*Math.PI/365*(n-1+(hr-12)/24);
+  const eq=229.18*(0.000075+0.001868*Math.cos(g)-0.032077*Math.sin(g)-0.014615*Math.cos(2*g)-0.040849*Math.sin(2*g));
+  const dec=0.006918-0.399912*Math.cos(g)+0.070257*Math.sin(g)-0.006758*Math.cos(2*g)+0.000907*Math.sin(2*g)-0.002697*Math.cos(3*g)+0.00148*Math.sin(3*g);
+  const tst=hr*60+eq+4*LON-60*TZ,ha=(tst/4-180)*D2R,phi=LAT*D2R;
+  const cz=Math.sin(phi)*Math.sin(dec)+Math.cos(phi)*Math.cos(dec)*Math.cos(ha);
+  const alt=Math.asin(Math.max(-1,Math.min(1,cz)))/D2R;
+  const az=((Math.atan2(Math.sin(ha),Math.cos(ha)*Math.sin(phi)-Math.tan(dec)*Math.cos(phi))/D2R+180)+360)%360;return {alt,az,dec,eq};}
+function riseSet(m,d){const {dec,eq}=solar(m,d,12),phi=LAT*D2R;const ha=Math.acos(Math.cos(90.833*D2R)/(Math.cos(phi)*Math.cos(dec))-Math.tan(phi)*Math.tan(dec))/D2R;
+  return [(720-4*(LON+ha)-eq+TZ*60)/60,(720-4*(LON-ha)-eq+TZ*60)/60];}
+const sunDir=(s)=>{const a=s.az*D2R,h=s.alt*D2R;return new THREE.Vector3(Math.sin(a)*Math.cos(h),Math.sin(h),-Math.cos(a)*Math.cos(h));};
+const hm=v=>{let h=Math.floor(v),m=Math.round((v-h)*60);if(m===60){h++;m=0}return `${h}:${String(m).padStart(2,'0')}`;};
+const dur=v=>{const m=Math.round(v*60);return m<60?`${m} min`:`${Math.floor(m/60)} h ${String(m%60).padStart(2,'0')} m`;};
+const compass=a=>['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'][Math.round(((a%360)+360)%360/22.5)%16];
+let month=11,time=8;
+const skyDay=new THREE.Color(0xbcd3e4),skyLow=new THREE.Color(0xf0cfa8),skyNight=new THREE.Color(0x1b2430);
+function applySun(){const s=solar(month,21,time);const d=sunDir({alt:Math.max(s.alt,-4),az:s.az});
+  sun.position.copy(sun.target.position).addScaledVector(d,1500);
+  const k=Math.max(0,Math.min(1,s.alt/12));sun.intensity=2.6*k;sun.color.setHSL(0.09,0.6*(1-k)+0.25,0.75+0.15*k);
+  hemi.intensity=0.12+0.38*Math.max(0,Math.min(1,(s.alt+6)/20));
+  const bg=s.alt<=0?skyNight.clone().lerp(skyLow,Math.max(0,(s.alt+6)/6)):skyLow.clone().lerp(skyDay,k);scene.background=bg;scene.fog.color.copy(bg);
+  $('tLbl').textContent=hm(time);const [r0,r1]=riseSet(month,21);
+  $('sunRead').textContent=s.alt>0?`Sun ${s.az.toFixed(0)}° ${compass(s.az)}, ${s.alt.toFixed(0)}° high`:`Sun is down · rises ${hm(r0)}, sets ${hm(r1)}`;}
+
+/* ---------- direct-sun check for a point on a facade ---------- */
+const ray=new THREE.Raycaster();
+function sunHours(p,n,m){const [r0,r1]=riseSet(m,21);let lit=0,first=null,last=null;const o=p.clone().addScaledVector(n,0.6);
+  for(let t=r0;t<=r1;t+=1/6){const s=solar(m,21,t);if(s.alt<=0.5)continue;const d=sunDir(s);if(d.dot(n)<=0.03)continue;
+    ray.set(o,d);ray.far=3000;if(ray.intersectObjects(towerMeshes,false).length)continue;lit+=1/6;if(first===null)first=t;last=t;}
+  return {lit,first,last};}
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+let sel=null;
+function showSpot(){if(!sel){$('spotToday').textContent='No face selected yet.';$('spotMonths').innerHTML='';return;}const today=sunHours(sel.p,sel.n,month);
+  $('spotTitle').textContent=sel.title;
+  $('spotToday').innerHTML=today.lit>0?`21 ${MON[month-1]}: direct sun <b>${hm(today.first)}–${hm(today.last+1/6)}</b> · ${dur(today.lit)}`:`21 ${MON[month-1]}: <b>no direct sun</b> on this face`;
+  let h='';for(let m=1;m<=12;m++){const r=sunHours(sel.p,sel.n,m);h+=`<div class="${m===month?'cur':''}"><span>${MON[m-1]}</span>${r.lit>0?(r.lit).toFixed(1)+'h':'0'}</div>`;}
+  $('spotMonths').innerHTML=h;}
+
+/* ---------- picking ---------- */
+let down=null;
+canvas.addEventListener('pointerdown',e=>{down={x:e.clientX,y:e.clientY};});
+canvas.addEventListener('pointerup',e=>{if(!down)return;const moved=Math.hypot(e.clientX-down.x,e.clientY-down.y);down=null;if(moved>6)return;
+  const r=canvas.getBoundingClientRect();const v=new THREE.Vector2(((e.clientX-r.left)/r.width)*2-1,-((e.clientY-r.top)/r.height)*2+1);
+  ray.setFromCamera(v,camera);ray.far=8000;const hit=ray.intersectObjects(towerMeshes,false)[0];if(!hit)return;
+  const n=hit.face.normal.clone().transformDirection(hit.object.matrixWorld).normalize();if(Math.abs(n.y)>0.5)return;
+  const fl=hit.point.y<GF?0:Math.min(NFL-1,Math.floor((hit.point.y-GF)/FLOOR)+1);
+  const k=towerOf.get(hit.object);const az=(Math.atan2(n.x,-n.z)/D2R+360)%360;
+  sel={p:hit.point.clone(),n,title:`T-${String(k).padStart(2,'0')} · ${fl===0?'ground floor':ordinal(fl)+' floor'} · ${dirName(az)} face`};
+  pick.position.copy(hit.point);pick.visible=true;showSpot();});
+const ordinal=n=>n+(['th','st','nd','rd'][(n%100-20)%10]||['th','st','nd','rd'][n%100]||'th');
+const dirName=a=>({N:'north',NNE:'north',NE:'north-east',ENE:'east',E:'east',ESE:'east',SE:'south-east',SSE:'south',S:'south',SSW:'south',SW:'south-west',WSW:'west',W:'west',WNW:'west',NW:'north-west',NNW:'north'})[compass(a)];
+
+/* ---------- views ---------- */
+const orbit=new THREE.OrbitControls(camera,canvas);orbit.enableDamping=true;orbit.dampingFactor=0.08;orbit.maxPolarAngle=Math.PI*0.495;orbit.maxDistance=2600;
+const VIEWS={
+  over:{p:[560,430,560],t:[20,40,-70]},
+  lake:{p:[-720,140,120],t:[20,70,-70]},
+  plan:{p:[0,1250,1],t:[0,0,-60]},
+  t3:{p:[470,190,160],t:[215,80,-20]},
+  street:{p:[150,2,90],t:[60,60,-80]}
+};
+function setView(k){const v=VIEWS[k];camera.position.set(...v.p);orbit.target.set(...v.t);
+  orbit.minDistance=k==='street'?5:20;camera.fov=k==='street'?60:45;camera.updateProjectionMatrix();orbit.update();
+  document.querySelectorAll('#viewSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===k));}
+document.querySelectorAll('#viewSeg button').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.v)));
+
+/* ---------- UI ---------- */
+$('mon').addEventListener('change',e=>{month=+e.target.value;applySun();showSpot();});
+const rng=$('time');rng.addEventListener('input',()=>{time=+rng.value;applySun();});
+let playing=false;$('play').addEventListener('click',()=>{playing=!playing;const b=$('play');b.setAttribute('aria-pressed',playing);b.textContent=playing?'Pause':'Play the day';if(playing){const [r0]=riseSet(month,21);if(time>18)time=Math.max(5.5,r0-0.2);}});
+const tog=(id,fn)=>{const b=$(id);b.addEventListener('click',()=>{const on=b.getAttribute('aria-pressed')!=='true';b.setAttribute('aria-pressed',on);fn(on);});};
+tog('labT',on=>labels.visible=on);tog('shT',on=>{sun.castShadow=on;});
+$('collapse').addEventListener('click',()=>{const p=$('panel');const min=p.classList.toggle('min');$('collapse').textContent=min?'+':'–';$('collapse').setAttribute('aria-expanded',!min);});
+if(innerWidth<700){$('panel').classList.add('min');$('collapse').textContent='+';$('collapse').setAttribute('aria-expanded','false');}
+
+function resize(){const w=innerWidth,h=innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
+addEventListener('resize',resize);resize();
+const hv=(location.hash||'').slice(1);
+scene.updateMatrixWorld(true);
+setView(VIEWS[hv]?hv:'over');applySun();showSpot();
+let last=performance.now();
+(function loop(now){const dt=Math.min(0.05,(now-last)/1000);last=now;
+  if(playing){time+=dt*0.6;if(time>19){time=19;playing=false;$('play').textContent='Play the day';$('play').setAttribute('aria-pressed','false');}rng.value=time;applySun();}
+  orbit.update();renderer.render(scene,camera);requestAnimationFrame(loop);})(last);
+})();
+</script>
+</body>
+</html>
