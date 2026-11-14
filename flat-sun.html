@@ -385,7 +385,7 @@ function derive(base,o){const P=JSON.parse(JSON.stringify(base));const ren=o.ren
   P.rooms=P.rooms.filter(r=>!(o.drop||[]).includes(r.id)).map(r=>ren[r.id]?{...r,name:ren[r.id]}:r).concat(o.rooms||[]);
   P.glaze=P.glaze.filter(g=>!(o.dropGlaze||[]).some(f=>f(g))).concat(o.glaze||[]);
   for(const k of (o.drop||[]))delete P.open[k];Object.assign(P.open,o.open||{});
-  return Object.assign(P,{label:o.label||P.label,verified:o.verified,mirrorX:!!o.mirrorX,ext:o.ext||P.ext});}
+  return Object.assign(P,{label:o.label||P.label,verified:o.verified,mirrorX:!!o.mirrorX,ext:o.ext||P.ext,view:o.view});}
 /* Types J and I share Type H's rooms (master bedroom south-west, kitchen south-east) but the entrance is on the west
    and the living balcony is on the east. Brochure p.96 (I) and p.97 (J). */
 const JI_DROP=g=>["bal1","bal"].includes(g.to)||["bal1","bal"].includes(g.room);
@@ -459,6 +459,169 @@ PLANS.S=derive(PLANS.R,{ext:[5.2,0,49.7,48.5],verified:'Derived from the traced 
          {room:'br1',x1:5.3,z1:4,x2:5.3,z2:15,sill:2.25,head:6.75,to:'out'},
          {room:'bal',x1:49.6,z1:16.7,x2:49.6,z2:28.9,sill:0,head:9.5,to:'out'},
          {room:'balB',x1:47.7,z1:3.4,x2:47.7,z2:16.4,sill:0,head:9.5,to:'out'}]});
+/* Type K (3 Bed Prima, east entrance, living balcony on the north): T-06 flat 7, T-07/T-11/T-13 flat 10.
+   Traced from brochure p.98 at ~31 px/ft. */
+PLANS.K={label:'3 Bed Prima', verified:'Traced from the brochure plan; not yet checked by a Type K owner',
+ ext:[0.8,0.3,43.4,50.6],
+ rooms:[
+  {id:'br1',name:'Bedroom 1',rects:[[2.7,8.5,13.9,12.1]]},
+  {id:'br2',name:'Bedroom 2',rects:[[17.4,8.5,11.5,12.1]]},
+  {id:'hall',name:'Living & dining',rects:[[29.5,8.5,13.2,22.4],[12.0,21.3,17.5,9.6],[15.5,30.8,14.0,5.5]]},
+  {id:'t1',name:'Toilet 1',rects:[[4.8,21.3,6.3,9.0]]},
+  {id:'mbr',name:'Master bedroom',rects:[[2.7,31.8,12.1,14.8]]},
+  {id:'t3',name:'Toilet 3',rects:[[15.5,36.8,6.8,9.7]]},
+  {id:'t2',name:'Toilet 2',rects:[[22.9,36.8,6.5,9.7]]},
+  {id:'kit',name:'Kitchen',rects:[[29.7,31.1,13.1,10.7]]},
+  {id:'bal',name:'Living balcony',rects:[[29.0,0.5,14.0,7.2]],outdoor:true},
+  {id:'ut',name:'Utility',rects:[[30.0,42.1,12.8,4.2]],outdoor:true}],
+ open:{
+  bal:{rects:[[29.0,0.5,14.0,7.2]],roof:9.5,edges:[{x1:29.0,z1:0.4,x2:43.0,z2:0.4,lo:0,hi:9.5},{x1:43.1,z1:0.5,x2:43.1,z2:7.7,lo:0,hi:9.5}]},
+  ut:{rects:[[30.0,42.1,12.8,4.2]],roof:9.5,edges:[{x1:30.0,z1:46.4,x2:42.8,z2:46.4,lo:3.25,hi:9.5}]}},
+ glaze:[
+  {room:'br1',x1:6.0,z1:8.0,x2:13.9,z2:8.0,sill:2.25,head:6.75,to:'out'},
+  {room:'br1',x1:2.2,z1:16.1,x2:2.2,z2:17.9,sill:2.25,head:6.75,to:'out'},
+  {room:'br2',x1:19.4,z1:8.0,x2:27.3,z2:8.0,sill:2.25,head:6.75,to:'out'},
+  {room:'hall',x1:29.8,z1:7.9,x2:41.3,z2:7.9,sill:0,head:7.2,to:'bal'},
+  {room:'t1',x1:4.2,z1:22,x2:4.2,z2:29.5,sill:5,head:7,to:'out'},
+  {room:'mbr',x1:2.2,z1:33.7,x2:2.2,z2:36.6,sill:2.25,head:6.75,to:'out'},
+  {room:'mbr',x1:4.8,z1:46.6,x2:12.9,z2:46.6,sill:2.25,head:6.75,to:'out'},
+  {room:'t3',x1:16,z1:46.6,x2:21.8,z2:46.6,sill:5,head:7,to:'out'},
+  {room:'t2',x1:23.4,z1:46.6,x2:29,z2:46.6,sill:5,head:7,to:'out'},
+  {room:'kit',x1:35.0,z1:41.9,x2:37.1,z2:41.9,sill:3,head:7,to:'ut'},
+  {room:'bal',x1:29.0,z1:0.4,x2:43.0,z2:0.4,sill:0,head:9.5,to:'out'},
+  {room:'bal',x1:43.1,z1:0.5,x2:43.1,z2:7.7,sill:0,head:9.5,to:'out'},
+  {room:'ut',x1:30.0,z1:46.4,x2:42.8,z2:46.4,sill:3.25,head:9.5,to:'out'}],
+ walls:[[2.1,7.7,27.4,0.6],[2.1,46.4,41.3,0.5],[42.8,7.7,0.6,39.2],[2.1,7.7,0.6,39.2]]};
+
+/* Type L (west entrance, living balcony east, Bedroom 2 balcony north): T-11/T-12/T-13 flat 1.
+   Traced from brochure p.99 at ~27.8 px/ft. */
+PLANS.L={label:'3 Bed Prima', verified:'Traced from the brochure plan; not yet checked by a Type L owner',
+ ext:[6.4,0.6,44.3,51.3],
+ rooms:[
+  {id:'br1',name:'Bedroom 1',rects:[[7.0,6.8,11.0,12.6]]},
+  {id:'t1',name:'Toilet 1',rects:[[18.5,6.8,6.3,9.0]]},
+  {id:'t2',name:'Toilet 2',rects:[[25.7,6.8,6.1,9.0]]},
+  {id:'br2',name:'Bedroom 2',rects:[[32.6,6.8,11.1,12.6]]},
+  {id:'hall',name:'Living & dining',rects:[[7.0,20.0,29.3,12.9],[16.9,15.8,14.4,4.2]]},
+  {id:'mbr',name:'Master bedroom',rects:[[7.0,33.6,12.1,14.0]]},
+  {id:'t3',name:'Toilet 3',rects:[[21.0,38.5,6.8,9.0]]},
+  {id:'kit',name:'Kitchen',rects:[[28.4,33.5,10.4,14.2]]},
+  {id:'balN',name:'Bedroom balcony',rects:[[32.4,0.7,11.7,5.6]],outdoor:true},
+  {id:'bal',name:'Living balcony',rects:[[37.0,20.0,7.0,12.7]],outdoor:true},
+  {id:'ut',name:'Utility',rects:[[39.4,33.5,4.7,14.2]],outdoor:true}],
+ open:{
+  balN:{rects:[[32.4,0.7,11.7,5.6]],roof:9.5,edges:[{x1:32.4,z1:0.6,x2:44.1,z2:0.6,lo:0,hi:9.5},{x1:44.2,z1:0.7,x2:44.2,z2:6.3,lo:0,hi:9.5}]},
+  bal:{rects:[[37.0,20.0,7.0,12.7]],roof:9.5,edges:[{x1:44.1,z1:20.0,x2:44.1,z2:32.7,lo:0,hi:9.5}]},
+  ut:{rects:[[39.4,33.5,4.7,14.2]],roof:9.5,edges:[{x1:44.1,z1:33.5,x2:44.1,z2:47.7,lo:3.25,hi:9.5}]}},
+ glaze:[
+  {room:'br1',x1:8.5,z1:6.5,x2:16.4,z2:6.5,sill:2.25,head:6.75,to:'out'},
+  {room:'t1',x1:19,z1:6.5,x2:24.3,z2:6.5,sill:5,head:7,to:'out'},
+  {room:'t2',x1:26.2,z1:6.5,x2:31.3,z2:6.5,sill:5,head:7,to:'out'},
+  {room:'br2',x1:34.4,z1:6.5,x2:42.1,z2:6.5,sill:0,head:7,to:'balN'},
+  {room:'hall',x1:36.7,z1:21.5,x2:36.7,z2:31.5,sill:0,head:7.2,to:'bal'},
+  {room:'mbr',x1:10.4,z1:48.0,x2:18.2,z2:48.0,sill:2.25,head:6.75,to:'out'},
+  {room:'t3',x1:21.5,z1:48.0,x2:27.2,z2:48.0,sill:5,head:7,to:'out'},
+  {room:'kit',x1:39.0,z1:38.7,x2:39.0,z2:41.2,sill:3,head:7,to:'ut'},
+  {room:'balN',x1:32.4,z1:0.6,x2:44.1,z2:0.6,sill:0,head:9.5,to:'out'},
+  {room:'balN',x1:44.2,z1:0.7,x2:44.2,z2:6.3,sill:0,head:9.5,to:'out'},
+  {room:'bal',x1:44.1,z1:20.0,x2:44.1,z2:32.7,sill:0,head:9.5,to:'out'},
+  {room:'ut',x1:44.1,z1:33.5,x2:44.1,z2:47.7,sill:3.25,head:9.5,to:'out'}],
+ walls:[[6.4,6.3,37.8,0.5],[6.4,47.7,37.8,0.5],[6.4,6.3,0.6,41.9],[43.8,6.3,0.5,13.7]]};
+
+/* Type M (east entrance, living balcony west, Bedroom 2 balcony north): T-05 flat 8, T-11/T-13 flat 7.
+   Traced from brochure p.100 at ~33.1 px/ft. */
+PLANS.M={label:'3 Bed Prima', verified:'Traced from the brochure plan; not yet checked by a Type M owner',
+ ext:[1.9,0.9,39.6,51.2],
+ rooms:[
+  {id:'br1',name:'Bedroom 1',rects:[[2.4,6.8,11.0,12.5]]},
+  {id:'t1',name:'Toilet 1',rects:[[14.0,6.8,6.4,9.1]]},
+  {id:'t2',name:'Toilet 2',rects:[[21.0,6.8,6.3,9.1]]},
+  {id:'br2',name:'Bedroom 2',rects:[[28.1,6.8,10.9,12.5]]},
+  {id:'hall',name:'Living & dining',rects:[[9.7,19.9,29.3,13.2],[14.8,15.9,12.7,4.1]]},
+  {id:'mbr',name:'Master bedroom',rects:[[2.4,33.7,15.4,14.0]]},
+  {id:'t3',name:'Toilet 3',rects:[[18.4,38.2,6.6,9.5]]},
+  {id:'kit',name:'Kitchen',rects:[[25.5,33.5,13.4,9.1]]},
+  {id:'balN',name:'Bedroom balcony',rects:[[27.5,0.9,11.9,5.3]],outdoor:true},
+  {id:'bal',name:'Living balcony',rects:[[2.1,20.2,7.1,12.6]],outdoor:true},
+  {id:'ut',name:'Utility',rects:[[25.5,43.2,13.9,4.5]],outdoor:true}],
+ open:{
+  balN:{rects:[[27.5,0.9,11.9,5.3]],roof:9.5,edges:[{x1:27.5,z1:0.8,x2:39.4,z2:0.8,lo:0,hi:9.5},{x1:39.5,z1:0.9,x2:39.5,z2:6.2,lo:0,hi:9.5}]},
+  bal:{rects:[[2.1,20.2,7.1,12.6]],roof:9.5,edges:[{x1:2.0,z1:20.2,x2:2.0,z2:32.8,lo:0,hi:9.5}]},
+  ut:{rects:[[25.5,43.2,13.9,4.5]],roof:9.5,edges:[{x1:39.5,z1:43.2,x2:39.5,z2:47.7,lo:3.25,hi:9.5},{x1:27.5,z1:47.8,x2:39.5,z2:47.8,lo:3.25,hi:9.5}]}},
+ glaze:[
+  {room:'br1',x1:2.0,z1:9.1,x2:2.0,z2:17.2,sill:2.25,head:6.75,to:'out'},
+  {room:'br1',x1:8.0,z1:6.4,x2:10.9,z2:6.4,sill:2.25,head:6.75,to:'out'},
+  {room:'t1',x1:14.5,z1:6.4,x2:20,z2:6.4,sill:5,head:7,to:'out'},
+  {room:'t2',x1:21.5,z1:6.4,x2:26.8,z2:6.4,sill:5,head:7,to:'out'},
+  {room:'br2',x1:28.1,z1:6.4,x2:37.6,z2:6.4,sill:0,head:7,to:'balN'},
+  {room:'hall',x1:9.5,z1:20.5,x2:9.5,z2:31.5,sill:0,head:7.2,to:'bal'},
+  {room:'mbr',x1:2.0,z1:36.3,x2:2.0,z2:44.4,sill:2.25,head:6.75,to:'out'},
+  {room:'mbr',x1:12.4,z1:48.0,x2:15.3,z2:48.0,sill:2.25,head:6.75,to:'out'},
+  {room:'t3',x1:19,z1:48.0,x2:24.5,z2:48.0,sill:5,head:7,to:'out'},
+  {room:'kit',x1:30.5,z1:42.9,x2:35.8,z2:42.9,sill:3,head:7,to:'ut'},
+  {room:'balN',x1:27.5,z1:0.8,x2:39.4,z2:0.8,sill:0,head:9.5,to:'out'},
+  {room:'balN',x1:39.5,z1:0.9,x2:39.5,z2:6.2,sill:0,head:9.5,to:'out'},
+  {room:'bal',x1:2.0,z1:20.2,x2:2.0,z2:32.8,sill:0,head:9.5,to:'out'},
+  {room:'ut',x1:39.5,z1:43.2,x2:39.5,z2:47.7,sill:3.25,head:9.5,to:'out'},
+  {room:'ut',x1:27.5,z1:47.8,x2:39.5,z2:47.8,sill:3.25,head:9.5,to:'out'}],
+ walls:[[1.9,6.3,37.4,0.5],[1.9,47.8,23.6,0.5],[38.9,6.3,0.6,37.0],[1.9,6.3,0.6,13.7],[1.9,33.0,0.6,15.3]]};
+
+/* Type N (T-05 flat 5, T-12 flat 8): Type M with the Bedroom 2 balcony replaced by a west balcony off Bedroom 1. Brochure p.101. */
+PLANS.N=derive(PLANS.M,{ext:[-3.2,0.9,39.6,51.2],verified:'Derived from the traced Type M and the Type N brochure plan; not yet checked by a Type N owner',
+  drop:['balN'],dropGlaze:[g=>g.to==='balN'||g.room==='balN',g=>g.room==='br1'&&g.x1===2.0],
+  rooms:[{id:'balW',name:'Bedroom balcony',rects:[[-3.0,6.8,4.9,13.2]],outdoor:true}],
+  open:{balW:{rects:[[-3.0,6.8,4.9,13.2]],roof:9.5,edges:[{x1:-3.1,z1:6.8,x2:-3.1,z2:20.0,lo:0,hi:9.5}]}},
+  glaze:[{room:'br1',x1:2.0,z1:8.0,x2:2.0,z2:18.0,sill:0,head:7,to:'balW'},
+         {room:'br2',x1:29.6,z1:6.4,x2:37.4,z2:6.4,sill:2.25,head:6.75,to:'out'},
+         {room:'balW',x1:-3.1,z1:6.8,x2:-3.1,z2:20.0,sill:0,head:9.5,to:'out'}]});
+
+/* Type O (3 Bed Prima, north entrance, living balcony south): T-11/T-13 flat 2. Traced from brochure p.103 at ~30 px/ft. */
+PLANS.O={label:'3 Bed Prima', verified:'Traced from the brochure plan; not yet checked by a Type O owner',
+ ext:[1.4,2.1,44.5,44.1],
+ rooms:[
+  {id:'br1',name:'Bedroom 1',rects:[[5.2,2.8,13.0,12.7]]},
+  {id:'t1',name:'Toilet 1',rects:[[5.2,16.3,8.2,5.3]]},
+  {id:'t2',name:'Toilet 2',rects:[[5.2,22.2,8.2,5.2]]},
+  {id:'hall',name:'Living & dining',rects:[[18.8,2.8,13.4,33.4]]},
+  {id:'br2',name:'Bedroom 2',rects:[[32.8,2.8,11.0,13.7]]},
+  {id:'t3',name:'Toilet 3',rects:[[34.3,17.3,6.5,8.8]]},
+  {id:'mbr',name:'Master bedroom',rects:[[5.2,31.0,13.0,13.0]]},
+  {id:'kit',name:'Kitchen',rects:[[32.8,26.7,11.0,11.6]]},
+  {id:'bal',name:'Living balcony',rects:[[18.8,36.3,13.4,7.5]],outdoor:true},
+  {id:'ut',name:'Utility',rects:[[34.8,39.0,9.5,4.8]],outdoor:true}],
+ open:{
+  bal:{rects:[[18.8,36.3,13.4,7.5]],roof:9.5,edges:[{x1:18.8,z1:43.9,x2:32.2,z2:43.9,lo:0,hi:9.5}]},
+  ut:{rects:[[34.8,39.0,9.5,4.8]],roof:9.5,edges:[{x1:44.4,z1:39.0,x2:44.4,z2:43.8,lo:3.25,hi:9.5},{x1:35.0,z1:43.9,x2:44.3,z2:43.9,lo:3.25,hi:9.5}]}},
+ glaze:[
+  {room:'br1',x1:4.8,z1:7.7,x2:4.8,z2:14.0,sill:2.25,head:6.75,to:'out'},
+  {room:'t1',x1:1.6,z1:17,x2:1.6,z2:21,sill:5,head:7,to:'out'},
+  {room:'t2',x1:1.6,z1:23,x2:1.6,z2:27,sill:5,head:7,to:'out'},
+  {room:'br2',x1:44.2,z1:5.5,x2:44.2,z2:14.0,sill:2.25,head:6.75,to:'out'},
+  {room:'t3',x1:44.2,z1:18,x2:44.2,z2:25,sill:5,head:7,to:'out'},
+  {room:'hall',x1:20,z1:36.2,x2:30.5,z2:36.2,sill:0,head:7.2,to:'bal'},
+  {room:'mbr',x1:4.8,z1:31,x2:4.8,z2:33,sill:2.25,head:6.75,to:'out'},
+  {room:'mbr',x1:7.8,z1:44.0,x2:15.7,z2:44.0,sill:2.25,head:6.75,to:'out'},
+  {room:'kit',x1:38.0,z1:38.6,x2:40.8,z2:38.6,sill:3,head:7,to:'ut'},
+  {room:'bal',x1:18.8,z1:43.9,x2:32.2,z2:43.9,sill:0,head:9.5,to:'out'},
+  {room:'ut',x1:44.4,z1:39.0,x2:44.4,z2:43.8,sill:3.25,head:9.5,to:'out'},
+  {room:'ut',x1:35.0,z1:43.9,x2:44.3,z2:43.9,sill:3.25,head:9.5,to:'out'}],
+ walls:[[4.5,2.2,40.0,0.6],[4.5,43.9,14.3,0.5],[4.5,2.2,0.6,13.5],[4.5,28.0,0.6,16.4],[44.0,2.2,0.6,14.8]]};
+
+/* Type P (T-06/T-07/T-11/T-13 flat 6): Type O plus a west balcony off Bedroom 1. Brochure p.104. */
+PLANS.P=derive(PLANS.O,{ext:[-0.4,2.1,44.5,44.1],verified:'Derived from the traced Type O and the Type P brochure plan; not yet checked by a Type P owner',
+  dropGlaze:[g=>g.room==='br1'],
+  rooms:[{id:'balW',name:'Bedroom balcony',rects:[[-0.2,3.2,4.8,13.0]],outdoor:true}],
+  open:{balW:{rects:[[-0.2,3.2,4.8,13.0]],roof:9.5,edges:[{x1:-0.3,z1:3.2,x2:-0.3,z2:16.2,lo:0,hi:9.5}]}},
+  glaze:[{room:'br1',x1:4.8,z1:4.0,x2:4.8,z2:14.5,sill:0,head:7,to:'balW'},
+         {room:'balW',x1:-0.3,z1:3.2,x2:-0.3,z2:16.2,sill:0,head:9.5,to:'out'}]});
+
+/* Type Q (T-07 flat 2): Type O plus an east balcony off Bedroom 2. Brochure p.105. */
+PLANS.Q=derive(PLANS.O,{ext:[1.4,2.1,44.5,44.1],view:[1.4,2.1,49.6,44.1],verified:'Derived from the traced Type O and the Type Q brochure plan; not yet checked by a Type Q owner',
+  dropGlaze:[g=>g.room==='br2'],
+  rooms:[{id:'balE',name:'Bedroom balcony',rects:[[44.5,3.2,4.9,14.3]],outdoor:true}],
+  open:{balE:{rects:[[44.5,3.2,4.9,14.3]],roof:9.5,edges:[{x1:49.5,z1:3.2,x2:49.5,z2:17.5,lo:0,hi:9.5}]}},
+  glaze:[{room:'br2',x1:44.2,z1:4.0,x2:44.2,z2:15.5,sill:0,head:7,to:'balE'},
+         {room:'balE',x1:49.5,z1:3.2,x2:49.5,z2:17.5,sill:0,head:9.5,to:'out'}]});
 
 const FT=0.3048;
 function planFor(type){const P=PLANS[type];if(!P)return null;const e0=P.ext[0],e1=P.ext[2];const mx=v=>P.mirrorX?e0+e1-v:v;
@@ -498,7 +661,7 @@ function renderRooms(U,base){const box=$('rooms');const pl=planFor(U.type);if(ro
   if(!pl){box.innerHTML=`<div class="panel"><h3>Room by room</h3><p class="sub">Type ${U.type} hasn't been traced yet. Room-by-room sun is ready for Types ${(k=>k.slice(0,-1).join(', ')+' and '+k[k.length-1])(Object.keys(PLANS).sort())} so far, and more types are being added. If you own a Type ${U.type} flat, a photo of your unit plan helps.</p></div>`;return;}
   const day=roomDay(U,pl,base,month);
   const [r0,r1]=riseSet(month);roomTime=Math.min(Math.max(roomTime,r0),r1);
-  const S=13,[x0,z0,x1,z1]=pl.ext,W=(x1-x0)*S,H=(z1-z0)*S,X=v=>(v-x0)*S,Z=v=>(v-z0)*S;
+  const S=13,[x0,z0,x1,z1]=pl.view||pl.ext,W=(x1-x0)*S,H=(z1-z0)*S,X=v=>(v-x0)*S,Z=v=>(v-z0)*S;
   box.innerHTML=`<div class="panel"><h3>Room by room</h3><p class="sub">Type ${U.type} · ${pl.label}. Orange is direct sun on the floor of each room, 21 ${MON[month-1]}. ${pl.verified||''}.</p>
    <div class="rgrid"><div class="rplan"><svg id="rsvg" viewBox="-30 -30 ${W+60} ${H+60}" role="img" aria-label="Plan of the flat with sun patches"></svg>
    <label class="rlab" for="rt">Time · <b id="rtl"></b> IST</label><input type="range" id="rt" min="${r0.toFixed(3)}" max="${r1.toFixed(3)}" step="0.0833" value="${roomTime}"><button type="button" class="rplay" id="rplay">Play the day</button></div>
