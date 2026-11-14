@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <!-- Google Analytics (GA4) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-R17JKPB0KC"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-R17JKPB0KC');
+  </script>
+  <title>Sun on Your Flat · TPCH Owners Hub</title>
+  <meta name="description" content="Pick your tower, floor and flat at The Prestige City Hyderabad and see when direct sun reaches each side of it, month by month, after shadows from the other towers." />
+  <link rel="canonical" href="https://tpch.in/flat-sun.html" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <meta name="theme-color" content="#20362E" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="TPCH Owners Hub" />
+  <meta property="og:title" content="Sun on Your Flat · The Prestige City Hyderabad" />
+  <meta property="og:description" content="Pick your flat and see when direct sun reaches each side of it, month by month." />
+  <meta property="og:url" content="https://tpch.in/flat-sun.html" />
+  <meta property="og:image" content="https://tpch.in/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+<style>
+/* Layout: page subhead, then a picker bar, then a two-column result (floor-plate diagram | day strip + year table); stacks on phones */
+.fs{--sun:#D9921F;--sun-soft:#F6E6C8;--shade:#E7E3DA;--ink:var(--graphite);--mute:var(--muted)}
+.picker{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;background:var(--card);border:1px solid var(--line);border-radius:4px;padding:18px 20px;box-shadow:var(--shadow)}
+.picker label{display:grid;gap:6px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);font-weight:600}
+.picker select,.picker input{font:500 15px var(--sans);color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:3px;padding:9px 10px;min-width:0}
+.picker input{width:9.5em}
+.picker .or{align-self:center;color:var(--mute);font-size:13px;padding-bottom:10px}
+.picker button{font:600 14px var(--sans);background:var(--forest);color:var(--ivory);border:0;border-radius:3px;padding:10px 16px;cursor:pointer}
+.picker select:focus-visible,.picker input:focus-visible,.picker button:focus-visible,.months button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.err{color:#9B2F1F;font-size:14px;margin:10px 0 0}
+.result{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:26px;margin-top:26px;align-items:start}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:20px;box-shadow:var(--shadow);min-width:0}
+.panel h3{font-size:26px;margin:0 0 4px}
+.sub{color:var(--mute);font-size:14px;margin:0 0 14px}
+.plate svg{width:100%;height:auto;display:block}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--mute);margin-top:10px}
+.legend i{display:inline-block;width:14px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.months{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 16px}
+.months button{font:600 12.5px var(--sans);border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:5px 11px;cursor:pointer}
+.months button[aria-pressed="true"]{background:var(--forest);border-color:var(--forest);color:var(--ivory)}
+.strip{overflow-x:auto}
+.strip svg{display:block;width:100%;min-width:520px;height:auto}
+.tablewrap{overflow-x:auto;margin-top:18px}
+table.yr{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
+table.yr th,table.yr td{padding:7px 6px;border-bottom:1px solid var(--line);text-align:center;white-space:nowrap}
+table.yr th:first-child,table.yr td:first-child{text-align:left}
+table.yr th{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);font-weight:600}
+table.yr td.cur,table.yr th.cur{background:var(--sun-soft)}
+.facts{display:grid;gap:8px;margin:16px 0 0;padding:0;list-style:none;font-size:14.5px}
+.facts li{padding-left:16px;position:relative}
+.facts li::before{content:"";position:absolute;left:0;top:.62em;width:7px;height:7px;border-radius:50%;background:var(--gold)}
+.notes{font-size:13px;color:var(--mute);line-height:1.6;margin-top:26px;max-width:80ch}
+.rooms{margin-top:26px}
+.rgrid{display:grid;grid-template-columns:minmax(0,0.9fr) minmax(0,1.1fr);gap:24px;align-items:start}
+.rplan svg{width:100%;height:auto;display:block}
+.rlab{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);font-weight:600;margin:10px 0 4px}
+.rplan input[type=range]{width:100%;accent-color:#D9921F}
+.rplay,.to3d{font:600 13px var(--sans);background:var(--forest);color:var(--ivory);border:0;border-radius:3px;padding:8px 14px;cursor:pointer;margin-top:12px;display:inline-block}
+.to3d{background:transparent;color:var(--forest);border:1px solid var(--forest)}
+#rday td{text-align:left;white-space:normal}
+@media (max-width:900px){.result,.rgrid{grid-template-columns:minmax(0,1fr)}}
+</style>
+</head>
+<body>
+  <header class="nav solid" id="nav">
+    <div class="bar">
+      <a class="brand" href="index.html" aria-label="TPCH Owners Hub home">
+        <span class="mark">P</span>
+        <span class="bt">The Prestige City<small>Owners Hub · Hyderabad</small></span>
+      </a>
+      <nav class="links">
+        <a href="explore.html">Explore</a>
+        <a href="construction.html">Construction</a>
+        <a href="documents.html">Documents</a>
+        <a href="finance.html">Finance</a>
+        <a href="governance.html">Governance</a>
+        <a href="index.html#community">Community</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="subhead">
+    <div class="wrap">
+      <span class="kicker">Sun on your flat</span>
+      <h1 class="title">When does sun reach your home?</h1>
+      <p class="lead">Pick your tower, floor and flat. You'll see each outside wall of the flat, which way it faces, and the times direct sun reaches it, month by month, after shadows from the other 12 towers.</p>
+    </div>
+  </section>
+
+  <section class="band fs" style="padding:34px 0 60px">
+    <div class="wrap">
+      <form class="picker" id="pick" novalidate>
+        <label for="tw">Tower<select id="tw"></select></label>
+        <label for="fl">Floor<select id="fl"></select></label>
+        <label for="un">Flat<select id="un"></select></label>
+        <span class="or">or</span>
+        <label for="fno">Flat number<input id="fno" inputmode="numeric" autocomplete="off" placeholder="e.g. 51504"></label>
+        <button type="submit">Show</button>
+      </form>
+      <p class="err" id="err" hidden></p>
+
+      <div class="result">
+        <div class="panel plate">
+          <h3 id="ttl"></h3>
+          <p class="sub" id="sub"></p>
+          <div id="plate"></div>
+          <div class="legend"><span><i style="background:var(--sun)"></i>Outside wall with sun that day</span><span><i style="background:#9AA3A6"></i>Outside wall, no direct sun</span><span><i style="background:var(--shade)"></i>Other flats on the floor</span></div>
+          <ul class="facts" id="facts"></ul>
+          <a class="to3d" id="to3d" href="sun.html">See this flat in 3D →</a>
+        </div>
+        <div class="panel">
+          <h3>Through the day</h3>
+          <p class="sub">Direct sun on each outside wall, 21st of the month. Pick a month:</p>
+          <div class="months" id="months"></div>
+          <div class="strip" id="strip"></div>
+          <div class="tablewrap"><table class="yr" id="yr"></table></div>
+        </div>
+      </div>
+
+      <div class="rooms" id="rooms"></div>
+
+      <p class="notes">How this is worked out: tower and flat positions are traced from the brochure floor plates and masterplan and checked against the approved TRERA site plan. Towers are 134.15 m tall; true north is set from satellite imagery. The sun is calculated for the site (17.31° N, 78.42° E) on the 21st of each month, in 10-minute steps, and a wall counts as sunlit when sun reaches most of it without another tower in the way. Balcony slabs, fins, trees and the upcoming mall are not modelled, and side walls facing a narrow gap between flats are shown even though their windows see little sky. Refuge floors (19, 29, 39) have a different layout. Treat times as ±15 minutes, and check against your unit plan. This is an owners' tool, not a Prestige document. See all towers in 3D on the <a href="sun.html" style="text-decoration:underline">sun &amp; shadow model</a>.</p>
+    </div>
+  </section>
+
+  <nav class="tabbar" aria-label="Primary">
+    <a href="index.html#top"><span class="i">⌂</span>Home</a>
+    <a href="explore.html" class="active"><span class="i">🧭</span>Explore</a>
+    <a href="documents.html"><span class="i">📁</span>Docs</a>
+    <a href="index.html#community"><span class="i">👥</span>Community</a>
+  </nav>
+  <script src="app.js"></script>
+<script>
+(function(){
+const SITE={"towers":{"1":{"boxes":[[187.91,-226.18,8.6,1.72],[187.91,-224.46,12.04,1.72],[187.91,-210.7,25.8,1.72],[187.91,-196.94,27.52,3.44],[187.91,-179.74,25.8,1.72],[187.91,-165.98,25.8,1.72],[189.63,-222.74,10.32,1.72],[189.63,-221.02,8.6,1.72],[189.63,-219.3,27.52,3.44],[189.63,-208.98,25.8,6.88],[189.63,-193.5,25.8,1.72],[189.63,-191.78,24.08,5.16],[189.63,-181.46,24.08,1.72],[189.63,-178.02,24.08,1.72],[189.63,-176.3,25.8,1.72],[189.63,-174.58,24.08,3.44],[189.63,-164.26,24.08,1.72],[189.63,-162.54,10.32,1.72],[189.63,-160.82,8.6,1.72],[189.63,-159.1,10.32,1.72],[191.35,-212.42,5.16,1.72],[193.07,-227.9,1.72,1.72],[193.07,-202.1,3.44,1.72],[193.07,-167.7,5.16,1.72],[193.07,-157.38,1.72,1.72],[194.79,-186.62,1.72,1.72],[194.79,-183.18,1.72,1.72],[199.95,-221.02,15.48,1.72],[199.95,-212.42,6.88,1.72],[199.95,-202.1,6.88,1.72],[199.95,-186.62,5.16,1.72],[199.95,-167.7,3.44,1.72],[201.67,-215.86,3.44,3.44],[201.67,-200.38,3.44,3.44],[201.67,-184.9,3.44,3.44],[203.39,-162.54,10.32,1.72],[205.11,-160.82,8.6,1.72],[205.11,-159.1,6.88,1.72],[206.83,-224.46,10.32,3.44],[206.83,-167.7,3.44,1.72],[208.55,-212.42,3.44,1.72],[208.55,-202.1,3.44,1.72],[208.55,-157.38,1.72,1.72],[210.27,-186.62,3.44,1.72],[211.99,-227.9,1.72,1.72],[213.71,-226.18,3.44,1.72],[215.43,-227.9,1.72,1.72]],"bb":[187.9,-227.9,216.7,-155.7]},"2":{"boxes":[[188.77,-116.53,10.32,3.44],[188.77,-113.09,32.68,6.88],[188.77,-101.05,30.96,1.72],[188.77,-99.33,32.68,1.72],[188.77,-97.61,12.04,1.72],[188.77,-95.89,10.32,5.16],[190.49,-128.57,30.96,5.16],[190.49,-123.41,8.6,1.72],[190.49,-85.57,12.04,1.72],[190.49,-82.13,13.76,1.72],[190.49,-80.41,12.04,3.44],[192.21,-132.01,1.72,1.72],[192.21,-130.29,10.32,1.72],[192.21,-118.25,5.16,1.72],[192.21,-106.21,1.72,1.72],[192.21,-102.77,5.16,1.72],[192.21,-83.85,29.24,1.72],[192.21,-76.97,1.72,1.72],[193.93,-75.25,3.44,1.72],[195.65,-132.01,1.72,1.72],[195.65,-121.69,1.72,1.72],[195.65,-76.97,3.44,1.72],[199.09,-132.01,3.44,1.72],[200.81,-123.41,18.92,1.72],[200.81,-106.21,6.88,3.44],[200.81,-102.77,8.6,1.72],[204.25,-121.69,5.16,3.44],[204.25,-116.53,17.2,3.44],[205.97,-118.25,3.44,1.72],[205.97,-82.13,15.48,3.44],[207.69,-78.69,13.76,3.44],[209.41,-132.01,3.44,3.44],[209.41,-97.61,3.44,1.72],[209.41,-95.89,12.04,3.44],[209.41,-75.25,1.72,1.72],[211.13,-92.45,10.32,1.72],[211.13,-85.57,10.32,1.72],[212.85,-133.73,3.44,1.72],[212.85,-118.25,3.44,1.72],[212.85,-102.77,1.72,1.72],[212.85,-90.73,3.44,1.72],[212.85,-87.29,3.44,1.72],[212.85,-75.25,3.44,1.72],[214.57,-132.01,1.72,1.72],[214.57,-106.21,1.72,1.72],[214.57,-97.61,6.88,1.72],[218.01,-132.01,3.44,3.44]],"bb":[188.8,-133.7,221,-73.5]},"3":{"boxes":[[203.39,-51.17,6.88,1.72],[203.39,-49.45,24.08,5.16],[203.39,-44.29,6.88,1.72],[203.39,-37.41,24.08,10.32],[203.39,-20.21,24.08,6.88],[203.39,-6.45,24.08,6.88],[203.39,7.31,20.64,3.44],[203.39,10.75,10.32,1.72],[203.39,12.47,8.6,5.16],[205.11,-23.65,3.44,1.72],[205.11,-21.93,20.64,1.72],[205.11,-13.33,3.44,1.72],[205.11,-8.17,5.16,1.72],[205.11,0.43,18.92,1.72],[206.83,-52.89,3.44,1.72],[206.83,-42.57,1.72,1.72],[206.83,-39.13,1.72,1.72],[206.83,2.15,1.72,1.72],[206.83,17.63,1.72,1.72],[210.27,-23.65,13.76,1.72],[211.99,-44.29,15.48,1.72],[211.99,-42.57,5.16,1.72],[211.99,-39.13,5.16,1.72],[211.99,-13.33,6.88,1.72],[211.99,-8.17,12.04,1.72],[213.71,-40.85,3.44,1.72],[213.71,-27.09,3.44,1.72],[213.71,-25.37,1.72,1.72],[213.71,-9.89,3.44,1.72],[215.43,10.75,8.6,6.88],[218.87,-51.17,8.6,1.72],[220.59,-42.57,3.44,1.72],[220.59,-13.33,3.44,1.72],[220.59,2.15,3.44,1.72],[222.31,-39.13,1.72,1.72],[222.31,-27.09,1.72,1.72],[224.03,-52.89,1.72,1.72],[225.75,-8.17,1.72,1.72]],"bb":[203.4,-52.9,227,18.9]},"4":{"boxes":[[108.36,0.43,12.04,3.44],[108.36,3.87,13.76,6.88],[108.36,17.63,13.76,5.16],[108.36,22.79,12.04,6.88],[111.8,10.75,3.44,1.72],[111.8,29.67,3.44,1.72],[113.52,-1.29,3.44,1.72],[122.12,14.19,53.32,3.44],[123.84,12.47,1.72,1.72],[125.56,17.63,10.32,5.16],[125.56,22.79,12.04,3.44],[125.56,26.23,10.32,3.44],[129,2.15,6.88,1.72],[129,3.87,18.92,3.44],[130.72,0.43,5.16,1.72],[130.72,7.31,15.48,1.72],[135.88,9.03,3.44,1.72],[137.6,10.75,1.72,3.44],[139.32,-1.29,1.72,1.72],[139.32,2.15,8.6,1.72],[141.04,0.43,6.88,1.72],[141.04,17.63,10.32,1.72],[141.04,19.35,8.6,1.72],[141.04,21.07,10.32,5.16],[141.04,26.23,8.6,1.72],[142.76,9.03,1.72,1.72],[142.76,27.95,6.88,1.72],[144.48,12.47,1.72,1.72],[154.8,0.43,8.6,1.72],[154.8,2.15,24.08,5.16],[154.8,17.63,10.32,10.32],[156.52,7.31,12.04,1.72],[156.52,27.95,8.6,1.72],[158.24,-1.29,5.16,1.72],[163.4,9.03,3.44,1.72],[163.4,10.75,1.72,1.72],[163.4,12.47,3.44,1.72],[166.84,-1.29,12.04,3.44],[168.56,24.51,12.04,1.72],[170.28,-3.01,3.44,1.72],[170.28,7.31,8.6,1.72],[170.28,9.03,3.44,1.72],[170.28,17.63,5.16,1.72],[170.28,19.35,8.6,1.72],[170.28,21.07,10.32,3.44],[170.28,26.23,10.32,1.72],[170.28,27.95,8.6,1.72]],"bb":[108.4,-3,180.2,30.5]},"5":{"boxes":[[104.92,-33.97,27.52,1.72],[106.64,-78.69,3.44,3.44],[106.64,-75.25,27.52,3.44],[106.64,-64.93,5.16,1.72],[106.64,-63.21,6.88,1.72],[106.64,-61.49,8.6,1.72],[106.64,-59.77,25.8,5.16],[106.64,-49.45,25.8,3.44],[106.64,-46.01,8.6,1.72],[106.64,-44.29,6.88,3.44],[106.64,-32.25,24.08,1.72],[106.64,-30.53,10.32,3.44],[106.64,-27.09,3.44,1.72],[108.36,-71.81,24.08,1.72],[108.36,-40.85,5.16,1.72],[108.36,-35.69,12.04,1.72],[110.08,-70.09,3.44,1.72],[110.08,-25.37,5.16,1.72],[111.8,-76.97,5.16,1.72],[111.8,-23.65,1.72,1.72],[113.52,-80.41,3.44,1.72],[113.52,-27.09,3.44,1.72],[115.24,-78.69,1.72,1.72],[115.24,-54.61,6.88,5.16],[116.96,-70.09,5.16,1.72],[116.96,-61.49,15.48,1.72],[118.68,-68.37,3.44,3.44],[118.68,-64.93,10.32,1.72],[118.68,-63.21,13.76,1.72],[118.68,-46.01,13.76,5.16],[118.68,-40.85,12.04,1.72],[118.68,-39.13,1.72,3.44],[122.12,-30.53,6.88,5.16],[123.84,-78.69,6.88,3.44],[125.56,-35.69,5.16,1.72],[125.56,-25.37,3.44,1.72],[127.28,-80.41,6.88,1.72],[127.28,-54.61,1.72,1.72]],"bb":[104.9,-80.4,134.2,-23.2]},"6":{"boxes":[[5.59,-60.2,12.04,5.16],[7.31,-77.4,10.32,3.44],[7.31,-73.96,6.88,1.72],[7.31,-72.24,12.04,3.44],[7.31,-55.04,10.32,5.16],[9.03,-68.8,5.16,1.72],[9.03,-61.92,8.6,1.72],[14.19,-79.12,1.72,1.72],[14.19,-63.64,5.16,1.72],[15.91,-73.96,3.44,1.72],[17.63,-68.8,1.72,1.72],[19.35,-65.36,51.6,1.72],[21.07,-63.64,51.6,1.72],[22.79,-61.92,10.32,12.04],[26.23,-77.4,6.88,1.72],[26.23,-75.68,17.2,1.72],[26.23,-73.96,13.76,1.72],[27.95,-79.12,3.44,1.72],[27.95,-72.24,17.2,1.72],[33.11,-70.52,5.16,1.72],[33.11,-67.08,3.44,1.72],[34.83,-68.8,1.72,1.72],[36.55,-77.4,8.6,1.72],[36.55,-61.92,8.6,1.72],[36.55,-60.2,10.32,10.32],[38.27,-79.12,5.16,1.72],[39.99,-70.52,1.72,1.72],[50.31,-61.92,12.04,1.72],[50.31,-56.76,10.32,3.44],[52.03,-79.12,8.6,1.72],[52.03,-77.4,24.08,6.88],[52.03,-60.2,8.6,3.44],[52.03,-53.32,8.6,3.44],[55.47,-80.84,5.16,1.72],[57.19,-70.52,1.72,1.72],[60.63,-70.52,3.44,1.72],[60.63,-67.08,3.44,1.72],[62.35,-68.8,1.72,1.72],[64.07,-80.84,12.04,3.44],[65.79,-82.56,3.44,1.72],[65.79,-61.92,6.88,1.72],[65.79,-60.2,10.32,10.32],[67.51,-70.52,3.44,1.72],[74.39,-49.88,1.72,1.72]],"bb":[5.6,-82.6,75.7,-49.4]},"7":{"boxes":[[-93.31,-80.84,10.32,3.44],[-93.31,-61.92,10.32,10.32],[-91.59,-77.4,10.32,3.44],[-91.59,-73.96,12.04,1.72],[-91.59,-72.24,10.32,1.72],[-88.15,-82.56,1.72,1.72],[-88.15,-63.64,5.16,1.72],[-84.71,-65.36,43,1.72],[-81.27,-68.8,1.72,3.44],[-79.55,-63.64,48.16,1.72],[-79.55,-58.48,10.32,1.72],[-79.55,-56.76,12.04,1.72],[-77.83,-61.92,8.6,3.44],[-77.83,-55.04,8.6,3.44],[-76.11,-79.12,5.16,3.44],[-76.11,-75.68,18.92,1.72],[-74.39,-72.24,17.2,1.72],[-70.95,-73.96,13.76,1.72],[-69.23,-70.52,5.16,1.72],[-69.23,-68.8,3.44,1.72],[-69.23,-67.08,5.16,1.72],[-65.79,-77.4,8.6,1.72],[-65.79,-56.76,12.04,1.72],[-64.07,-80.84,1.72,1.72],[-64.07,-61.92,10.32,1.72],[-64.07,-60.2,8.6,3.44],[-64.07,-55.04,10.32,1.72],[-64.07,-53.32,3.44,1.72],[-62.35,-70.52,3.44,1.72],[-58.91,-53.32,3.44,1.72],[-50.31,-79.12,10.32,1.72],[-50.31,-77.4,24.08,1.72],[-50.31,-73.96,24.08,1.72],[-50.31,-72.24,15.48,1.72],[-50.31,-61.92,10.32,1.72],[-50.31,-58.48,10.32,5.16],[-48.59,-80.84,8.6,1.72],[-48.59,-75.68,22.36,1.72],[-48.59,-60.2,8.6,1.72],[-48.59,-53.32,8.6,1.72],[-46.87,-70.52,5.16,1.72],[-41.71,-82.56,1.72,1.72],[-38.27,-70.52,3.44,5.16],[-38.27,-65.36,8.6,1.72],[-36.55,-61.92,6.88,1.72],[-36.55,-58.48,13.76,1.72],[-36.55,-56.76,12.04,1.72],[-36.55,-55.04,10.32,5.16],[-34.83,-79.12,8.6,1.72],[-34.83,-60.2,12.04,1.72],[-34.83,-49.88,8.6,1.72],[-33.11,-80.84,6.88,1.72],[-31.39,-82.56,5.16,1.72],[-31.39,-72.24,5.16,1.72]],"bb":[-95,-82.6,-24.1,-49]},"8":{"boxes":[[-195.65,-23.65,15.48,1.72],[-195.65,-16.77,17.2,1.72],[-195.65,-15.05,15.48,1.72],[-195.65,-6.45,3.44,1.72],[-195.65,-4.73,15.48,1.72],[-195.65,0.43,15.48,3.44],[-193.93,-21.93,13.76,1.72],[-193.93,-20.21,20.64,3.44],[-193.93,-3.01,18.92,1.72],[-192.21,-13.33,6.88,1.72],[-192.21,-1.29,15.48,1.72],[-190.49,-6.45,10.32,1.72],[-190.49,3.87,3.44,1.72],[-176.73,-35.69,12.04,1.72],[-176.73,-33.97,15.48,1.72],[-176.73,-28.81,17.2,3.44],[-176.73,-16.77,5.16,1.72],[-176.73,5.59,17.2,3.44],[-176.73,12.47,17.2,3.44],[-176.73,15.91,15.48,1.72],[-175.01,-32.25,15.48,3.44],[-175.01,9.03,15.48,3.44],[-173.29,-15.05,34.4,1.72],[-173.29,-13.33,15.48,1.72],[-173.29,-11.61,13.76,5.16],[-173.29,-6.45,1.72,1.72],[-169.85,-6.45,12.04,1.72],[-164.69,-20.21,25.8,5.16],[-162.97,-4.73,24.08,1.72],[-161.25,-25.37,1.72,1.72],[-161.25,-3.01,22.36,1.72],[-161.25,2.15,3.44,1.72],[-159.53,-23.65,1.72,1.72],[-159.53,-21.93,20.64,1.72],[-159.53,-1.29,20.64,1.72],[-159.53,0.43,1.72,1.72],[-156.09,0.43,17.2,1.72],[-154.37,-23.65,12.04,1.72],[-154.37,-6.45,3.44,1.72],[-152.65,2.15,13.76,1.72],[-150.93,-13.33,5.16,1.72],[-150.93,3.87,3.44,1.72],[-149.21,-6.45,10.32,1.72],[-140.61,-23.65,1.72,1.72]],"bb":[-195.7,-35.7,-138.9,17.6]},"9":{"boxes":[[-178.45,-100.19,15.48,3.44],[-178.45,-91.59,15.48,3.44],[-178.45,-82.99,15.48,1.72],[-178.45,-81.27,17.2,1.72],[-178.45,-76.11,18.92,1.72],[-178.45,-74.39,15.48,1.72],[-178.45,-72.67,1.72,1.72],[-176.73,-96.75,20.64,5.16],[-176.73,-79.55,20.64,1.72],[-176.73,-77.83,18.92,1.72],[-175.01,-72.67,6.88,1.72],[-159.53,-64.07,17.2,3.44],[-157.81,-112.23,3.44,1.72],[-157.81,-108.79,3.44,1.72],[-157.81,-107.07,15.48,5.16],[-157.81,-70.95,15.48,5.16],[-157.81,-65.79,8.6,1.72],[-156.09,-110.51,8.6,1.72],[-156.09,-91.59,15.48,1.72],[-156.09,-89.87,12.04,1.72],[-156.09,-88.15,13.76,5.16],[-156.09,-82.99,1.72,1.72],[-156.09,-60.63,12.04,1.72],[-154.37,-101.91,3.44,1.72],[-150.93,-108.79,8.6,1.72],[-147.49,-96.75,25.8,1.72],[-147.49,-95.03,18.92,1.72],[-147.49,-93.31,25.8,1.72],[-147.49,-82.99,25.8,1.72],[-145.77,-110.51,1.72,1.72],[-145.77,-81.27,24.08,1.72],[-145.77,-79.55,17.2,1.72],[-145.77,-65.79,5.16,1.72],[-144.05,-101.91,1.72,1.72],[-142.33,-100.19,1.72,1.72],[-142.33,-98.47,20.64,1.72],[-142.33,-89.87,1.72,1.72],[-142.33,-77.83,13.76,1.72],[-142.33,-76.11,20.64,1.72],[-142.33,-74.39,1.72,3.44],[-137.17,-100.19,13.76,1.72],[-137.17,-91.59,15.48,1.72],[-137.17,-89.87,8.6,1.72],[-137.17,-74.39,15.48,1.72],[-135.45,-72.67,6.88,1.72],[-125.13,-95.03,3.44,1.72],[-125.13,-89.87,3.44,1.72],[-125.13,-79.55,3.44,3.44]],"bb":[-178.4,-112.2,-121.7,-58.5]},"10":{"boxes":[[-111.8,-158.67,10.32,3.44],[-111.8,-155.23,12.04,3.44],[-111.8,-151.79,41.28,3.44],[-111.8,-143.19,41.28,1.72],[-111.8,-141.47,13.76,3.44],[-111.8,-138.03,12.04,1.72],[-111.8,-136.31,10.32,1.72],[-110.08,-134.59,8.6,3.44],[-108.36,-148.35,3.44,1.72],[-103.2,-148.35,32.68,1.72],[-99.76,-146.63,15.48,3.44],[-98.04,-167.27,3.44,1.72],[-98.04,-129.43,13.76,3.44],[-96.32,-168.99,1.72,1.72],[-96.32,-163.83,12.04,3.44],[-96.32,-160.39,6.88,1.72],[-96.32,-131.15,8.6,1.72],[-96.32,-125.99,12.04,1.72],[-96.32,-124.27,10.32,5.16],[-94.6,-119.11,3.44,1.72],[-92.88,-165.55,8.6,1.72],[-89.44,-141.47,18.92,1.72],[-87.72,-160.39,3.44,1.72],[-87.72,-139.75,17.2,1.72],[-86,-158.67,15.48,6.88],[-86,-138.03,15.48,5.16],[-86,-132.87,12.04,1.72],[-86,-131.15,1.72,1.72],[-72.24,-132.87,1.72,1.72]],"bb":[-111.8,-169,-71,-118.3]},"11":{"boxes":[[-47.3,-148.35,12.04,5.16],[-45.58,-163.83,10.32,1.72],[-45.58,-162.11,12.04,5.16],[-45.58,-156.95,1.72,1.72],[-45.58,-143.19,10.32,1.72],[-45.58,-139.75,10.32,1.72],[-43.86,-167.27,5.16,1.72],[-43.86,-165.55,8.6,1.72],[-43.86,-141.47,8.6,1.72],[-40.42,-150.07,5.16,1.72],[-38.7,-151.79,5.16,1.72],[-36.98,-167.27,1.72,1.72],[-30.1,-165.55,8.6,3.44],[-30.1,-151.79,49.88,3.44],[-30.1,-148.35,10.32,1.72],[-30.1,-146.63,8.6,3.44],[-30.1,-143.19,10.32,3.44],[-30.1,-139.75,6.88,1.72],[-28.38,-162.11,18.92,5.16],[-21.5,-156.95,3.44,1.72],[-21.5,-153.51,3.44,1.72],[-19.78,-155.23,1.72,1.72],[-18.06,-163.83,8.6,1.72],[-18.06,-144.91,12.04,3.44],[-16.34,-148.35,8.6,1.72],[-16.34,-146.63,10.32,1.72],[-16.34,-141.47,10.32,3.44],[-14.62,-165.55,5.16,1.72],[-14.62,-156.95,1.72,1.72],[-6.02,-165.55,12.04,1.72],[-6.02,-163.83,25.8,5.16],[-4.3,-158.67,24.08,1.72],[-4.3,-148.35,12.04,1.72],[-2.58,-167.27,6.88,1.72],[-2.58,-146.63,10.32,8.6],[4.3,-168.99,1.72,1.72],[6.02,-156.95,3.44,5.16],[9.46,-167.27,10.32,3.44],[11.18,-148.35,6.88,1.72],[11.18,-146.63,12.04,1.72],[11.18,-144.91,10.32,8.6],[12.9,-168.99,6.88,1.72],[12.9,-156.95,1.72,1.72],[12.9,-136.31,8.6,1.72]],"bb":[-47.3,-169,21.9,-135]},"12":{"boxes":[[45.58,-192.64,1.72,1.72],[45.58,-190.92,8.6,1.72],[45.58,-189.2,27.52,1.72],[45.58,-187.48,6.88,1.72],[45.58,-185.76,20.64,1.72],[45.58,-184.04,8.6,1.72],[45.58,-177.16,6.88,1.72],[45.58,-175.44,25.8,5.16],[45.58,-170.28,18.92,1.72],[45.58,-163.4,25.8,3.44],[45.58,-159.96,8.6,1.72],[45.58,-158.24,6.88,5.16],[47.3,-178.88,5.16,1.72],[47.3,-168.56,3.44,1.72],[47.3,-165.12,3.44,1.72],[47.3,-149.64,10.32,1.72],[47.3,-147.92,20.64,3.44],[47.3,-144.48,6.88,1.72],[47.3,-142.76,8.6,3.44],[49.02,-139.32,3.44,1.72],[50.74,-192.64,3.44,1.72],[54.18,-187.48,5.16,1.72],[54.18,-168.56,6.88,1.72],[54.18,-166.84,5.16,1.72],[54.18,-165.12,6.88,1.72],[55.9,-184.04,3.44,1.72],[55.9,-159.96,15.48,1.72],[57.62,-182.32,3.44,3.44],[57.62,-178.88,10.32,1.72],[57.62,-177.16,6.88,1.72],[57.62,-158.24,13.76,1.72],[57.62,-156.52,12.04,3.44],[59.34,-149.64,6.88,1.72],[59.34,-144.48,8.6,3.44],[61.06,-190.92,12.04,1.72],[61.06,-187.48,12.04,1.72],[61.06,-184.04,1.72,1.72],[61.06,-141.04,6.88,1.72],[62.78,-139.32,5.16,1.72],[64.5,-184.04,1.72,1.72],[66.22,-177.16,3.44,1.72],[66.22,-170.28,1.72,1.72],[67.94,-194.36,1.72,1.72],[67.94,-192.64,5.16,1.72],[67.94,-185.76,5.16,1.72],[67.94,-184.04,1.72,1.72],[69.66,-196.08,3.44,1.72],[69.66,-170.28,1.72,1.72],[71.38,-194.36,1.72,1.72]],"bb":[43.9,-196.1,72.2,-138]},"13":{"boxes":[[98.47,-159.1,12.04,3.44],[100.19,-176.3,10.32,3.44],[100.19,-172.86,12.04,6.88],[100.19,-155.66,10.32,6.88],[103.63,-178.02,1.72,1.72],[105.35,-160.82,5.16,1.72],[108.79,-178.02,1.72,1.72],[110.51,-165.98,1.72,1.72],[110.51,-162.54,53.32,1.72],[113.95,-160.82,49.88,1.72],[113.95,-155.66,10.32,1.72],[115.67,-176.3,3.44,1.72],[115.67,-174.58,8.6,1.72],[115.67,-172.86,20.64,3.44],[115.67,-169.42,6.88,1.72],[115.67,-159.1,48.16,1.72],[115.67,-157.38,8.6,1.72],[115.67,-153.94,10.32,3.44],[115.67,-150.5,8.6,1.72],[117.39,-167.7,3.44,1.72],[122.55,-178.02,1.72,1.72],[124.27,-169.42,12.04,3.44],[125.99,-165.98,1.72,3.44],[127.71,-176.3,8.6,1.72],[127.71,-155.66,10.32,1.72],[127.71,-153.94,12.04,1.72],[129.43,-174.58,6.88,1.72],[129.43,-157.38,10.32,1.72],[129.43,-152.22,10.32,1.72],[129.43,-150.5,8.6,1.72],[139.75,-172.86,24.08,5.16],[141.47,-176.3,6.88,1.72],[141.47,-174.58,10.32,1.72],[141.47,-153.94,12.04,1.72],[143.19,-167.7,3.44,1.72],[143.19,-157.38,10.32,3.44],[143.19,-152.22,10.32,1.72],[143.19,-150.5,8.6,1.72],[148.35,-178.02,1.72,1.72],[148.35,-167.7,1.72,1.72],[151.79,-167.7,12.04,1.72],[151.79,-165.98,3.44,3.44],[153.51,-174.58,12.04,1.72],[155.23,-178.02,10.32,3.44],[156.95,-157.38,8.6,1.72],[156.95,-155.66,10.32,1.72],[156.95,-153.94,1.72,3.44],[156.95,-150.5,10.32,3.44],[158.67,-147.06,5.16,1.72],[160.39,-153.94,6.88,1.72],[162.11,-179.74,3.44,1.72],[162.11,-152.22,5.16,1.72],[165.55,-147.06,1.72,1.72]],"bb":[98.5,-179.7,167.3,-145.8]}},"ground":{}};
+const UNITS={"1":{"scaleCheck":0.99,"units":[{"u":1,"type":"I","name":"3 Bed Prima (West)","r":[206.08,-227.9,10.62,13.05]},{"u":2,"type":"E","name":"3 Bed Smart (West)","r":[206.08,-212.81,9.17,12.65]},{"u":3,"type":"E","name":"3 Bed Smart (West)","r":[206.08,-198.12,9.17,12.24]},{"u":4,"type":"E","name":"3 Bed Smart (West)","r":[206.08,-183.44,9.17,12.24]},{"u":5,"type":"J","name":"3 Bed Prima (West)","r":[203.43,-168.92,12.31,13.22]},{"u":6,"type":"H","name":"3 Bed Prima (East)","r":[187.9,-168.92,12.31,13.22]},{"u":7,"type":"H","name":"3 Bed Prima (East)","r":[187.9,-183.44,12.31,12.24]},{"u":8,"type":"H","name":"3 Bed Prima (East)","r":[187.9,-198.12,12.31,12.24]},{"u":9,"type":"H","name":"3 Bed Prima (East)","r":[187.9,-212.81,12.31,12.65]},{"u":10,"type":"H","name":"3 Bed Prima (East)","r":[187.9,-227.9,12.31,13.05]}]},"2":{"scaleCheck":0.94,"units":[{"u":1,"type":"S","name":"3 Bed Plus (West)","r":[208.74,-133.7,12.26,13.81]},{"u":2,"type":"S","name":"3 Bed Plus (West)","r":[208.74,-118.24,12.26,13.81]},{"u":3,"type":"S","name":"3 Bed Plus (West)","r":[208.74,-102.77,12.26,13.81]},{"u":4,"type":"S","name":"3 Bed Plus (West)","r":[208.74,-87.64,12.26,14.14]},{"u":5,"type":"R","name":"3 Bed Plus (East)","r":[191.4,-86.76,12.15,13.26]},{"u":6,"type":"R","name":"3 Bed Plus (East)","r":[188.8,-102.22,12.15,13.26]},{"u":7,"type":"R","name":"3 Bed Plus (East)","r":[188.8,-117.68,12.15,13.26]},{"u":8,"type":"R","name":"3 Bed Plus (East)","r":[191.4,-133.15,12.15,13.26]}]},"3":{"scaleCheck":0.97,"units":[{"u":1,"type":"E","name":"3 Bed Smart (West)","r":[217.96,-52.9,9.04,12.62]},{"u":2,"type":"E","name":"3 Bed Smart (West)","r":[217.96,-38.41,9.04,12.62]},{"u":3,"type":"E","name":"3 Bed Smart (West)","r":[217.96,-23.73,9.04,12.62]},{"u":4,"type":"E","name":"3 Bed Smart (West)","r":[217.96,-9.24,9.04,12.62]},{"u":5,"type":"E","name":"3 Bed Smart (West)","r":[215.34,5.53,9.04,13.37]},{"u":6,"type":"F","name":"3 Bed Smart (East)","r":[203.4,5.53,9.04,13.37]},{"u":7,"type":"F","name":"3 Bed Smart (East)","r":[203.4,-9.24,9.04,12.62]},{"u":8,"type":"F","name":"3 Bed Smart (East)","r":[203.4,-23.73,9.04,12.62]},{"u":9,"type":"F","name":"3 Bed Smart (East)","r":[203.4,-38.41,9.04,12.62]},{"u":10,"type":"F","name":"3 Bed Smart (East)","r":[203.4,-52.9,9.04,12.62]}]},"4":{"scaleCheck":0.96,"units":[{"u":1,"type":"S","name":"3 Bed Plus (West)","r":[165.99,-3,12.74,12.57]},{"u":2,"type":"G","name":"3 Bed Prima (North)","r":[167.88,18.07,12.32,12.43]},{"u":3,"type":"G","name":"3 Bed Prima (North)","r":[153.4,18.07,12.25,12.43]},{"u":4,"type":"G","name":"3 Bed Prima (North)","r":[139.4,18.07,12.25,12.43]},{"u":5,"type":"G","name":"3 Bed Prima (North)","r":[125.41,18.07,12.25,12.43]},{"u":6,"type":"R","name":"3 Bed Plus (East)","r":[108.4,17.57,12.81,12.93]},{"u":7,"type":"R","name":"3 Bed Plus (East)","r":[108.4,-1.33,12.81,13.08]},{"u":8,"type":"A","name":"2 Bed (East)","r":[129.39,-1.18,7.56,11.12]},{"u":9,"type":"C","name":"2 Bed Plus (West)","r":[139.26,-2.64,9.38,12.57]},{"u":10,"type":"B","name":"2 Bed Plus (East)","r":[154.17,-2.56,9.03,12.5]}]},"5":{"scaleCheck":1.02,"units":[{"u":1,"type":"I","name":"3 Bed Prima (West)","r":[123.08,-80.4,11.12,12.91]},{"u":2,"type":"E","name":"3 Bed Smart (West)","r":[123.08,-64.34,9.3,13.12]},{"u":3,"type":"E","name":"3 Bed Smart (West)","r":[123.08,-50.17,9.3,12.59]},{"u":4,"type":"J","name":"3 Bed Prima (West)","r":[120.3,-36.53,12.62,13.33]},{"u":5,"type":"N","name":"3 Bed Prima (East)","r":[104.9,-36.53,12.51,13.33]},{"u":6,"type":"F","name":"3 Bed Smart (East)","r":[105.33,-50.17,9.41,12.59]},{"u":7,"type":"F","name":"3 Bed Smart (East)","r":[105.33,-64.34,9.41,13.12]},{"u":8,"type":"M","name":"3 Bed Prima (East)","r":[106.18,-80.4,11.23,13.43]}]},"6":{"scaleCheck":0.96,"units":[{"u":1,"type":"S","name":"3 Bed Plus (West)","r":[62.61,-82.6,12.75,12.71]},{"u":2,"type":"G","name":"3 Bed Prima (North)","r":[64.11,-60.82,11.59,11.42]},{"u":3,"type":"G","name":"3 Bed Prima (North)","r":[49.92,-60.82,11.8,11.42]},{"u":4,"type":"G","name":"3 Bed Prima (North)","r":[36.01,-60.82,11.73,11.42]},{"u":5,"type":"G","name":"3 Bed Prima (North)","r":[21.97,-60.82,12,11.42]},{"u":6,"type":"P","name":"3 Bed Prima (North)","r":[5.6,-62.61,12.82,12.71]},{"u":7,"type":"K","name":"3 Bed Prima (East)","r":[6.69,-80.82,11.73,14.28]},{"u":8,"type":"A","name":"2 Bed (East)","r":[25.58,-80.96,7.98,11.07]},{"u":9,"type":"C","name":"2 Bed Plus (West)","r":[36.29,-82.39,8.93,12.49]},{"u":10,"type":"B","name":"2 Bed Plus (East)","r":[51.01,-82.03,8.86,12.14]}]},"7":{"scaleCheck":1.01,"units":[{"u":1,"type":"I","name":"3 Bed Prima (West)","r":[-36.51,-82.46,11.02,13.77]},{"u":2,"type":"Q","name":"3 Bed Prima (North)","r":[-37.06,-61.39,12.96,12.39]},{"u":3,"type":"D","name":"3 Bed Smart (North)","r":[-51.13,-61.39,12.13,9.78]},{"u":4,"type":"D","name":"3 Bed Smart (North)","r":[-65.2,-61.39,11.99,9.78]},{"u":5,"type":"D","name":"3 Bed Smart (North)","r":[-79.54,-61.39,12.48,9.78]},{"u":6,"type":"P","name":"3 Bed Prima (North)","r":[-95,-63.46,13.03,11.84]},{"u":7,"type":"H","name":"3 Bed Prima (East)","r":[-93.89,-81.02,12.27,12.19]},{"u":8,"type":"A","name":"2 Bed (East)","r":[-76.43,-80.19,7.97,11.36]},{"u":9,"type":"C","name":"2 Bed Plus (West)","r":[-66.03,-81.57,9.36,12.74]},{"u":10,"type":"K","name":"3 Bed Prima (East)","r":[-51.13,-82.6,11.99,13.77]}]},"8":{"scaleCheck":1.01,"units":[{"u":1,"type":"V","name":"4 Bed (West)","r":[-155.48,-23.62,16.58,13.86]},{"u":2,"type":"V","name":"4 Bed (West)","r":[-155.48,-7.49,16.58,12.79]},{"u":3,"type":"U3","name":"4 Bed (East)","r":[-177.68,4.31,16.58,13.29]},{"u":4,"type":"U2","name":"4 Bed (East)","r":[-195.7,-7.63,16.72,12.79]},{"u":5,"type":"U2","name":"4 Bed (East)","r":[-195.7,-23.26,16.72,12.44]},{"u":6,"type":"U1","name":"4 Bed (East)","r":[-177.68,-35.7,16.58,14]}]},"9":{"scaleCheck":1.02,"units":[{"u":1,"type":"V","name":"4 Bed (West)","r":[-138.35,-98.78,16.65,12.31]},{"u":2,"type":"V","name":"4 Bed (West)","r":[-138.35,-82.83,16.65,12.24]},{"u":3,"type":"U3","name":"4 Bed (East)","r":[-160.4,-71.79,17.07,13.29]},{"u":4,"type":"U2","name":"4 Bed (East)","r":[-178.4,-82.97,16.72,12.38]},{"u":5,"type":"U2","name":"4 Bed (East)","r":[-178.4,-98.91,16.72,12.45]},{"u":6,"type":"T","name":"4 Bed (East)","r":[-158.69,-112.2,15.15,13.84]}]},"10":{"scaleCheck":1.03,"units":[{"u":1,"type":"S","name":"3 Bed Plus (West)","r":[-83.44,-156.08,12.44,11.8]},{"u":2,"type":"S","name":"3 Bed Plus (West)","r":[-83.44,-141.5,12.44,11.6]},{"u":3,"type":"R","name":"3 Bed Plus (East)","r":[-97.79,-130.89,12.51,12.59]},{"u":4,"type":"R","name":"3 Bed Plus (East)","r":[-111.8,-142.29,12.44,12.39]},{"u":5,"type":"R","name":"3 Bed Plus (East)","r":[-111.8,-156.08,12.44,11.8]},{"u":6,"type":"R","name":"3 Bed Plus (East)","r":[-97.79,-169,12.51,13.25]}]},"11":{"scaleCheck":1.01,"units":[{"u":1,"type":"L","name":"3 Bed Prima (West)","r":[8.3,-169,10.91,14.2]},{"u":2,"type":"O","name":"3 Bed Prima (North)","r":[10.32,-147,11.58,12]},{"u":3,"type":"D","name":"3 Bed Smart (North)","r":[-4.35,-147,11.58,9.33]},{"u":4,"type":"D","name":"3 Bed Smart (North)","r":[-17.82,-147,11.11,9.33]},{"u":5,"type":"D","name":"3 Bed Smart (North)","r":[-31.95,-147,11.44,9.33]},{"u":6,"type":"P","name":"3 Bed Prima (North)","r":[-47.3,-149.47,12.86,11.8]},{"u":7,"type":"M","name":"3 Bed Prima (East)","r":[-46.09,-167.87,11.11,13.07]},{"u":8,"type":"B","name":"2 Bed Plus (East)","r":[-29.8,-167.33,8.62,12.53]},{"u":9,"type":"C","name":"2 Bed Plus (West)","r":[-18.09,-167.53,9.02,12.73]},{"u":10,"type":"K","name":"3 Bed Prima (East)","r":[-6.37,-168.47,11.78,13.67]}]},"12":{"scaleCheck":0.96,"units":[{"u":1,"type":"L","name":"3 Bed Prima (West)","r":[61.78,-196.1,10.42,13.39]},{"u":2,"type":"E","name":"3 Bed Smart (West)","r":[61.78,-180.7,8.81,12.58]},{"u":3,"type":"E","name":"3 Bed Smart (West)","r":[61.78,-165.98,8.81,12.58]},{"u":4,"type":"E","name":"3 Bed Smart(West)","r":[59.21,-151.25,9,13.25]},{"u":5,"type":"F","name":"3 Bed Smart (East)","r":[47.24,-151.25,8.88,13.25]},{"u":6,"type":"F","name":"3 Bed Smart (East)","r":[44.54,-165.98,9,12.58]},{"u":7,"type":"F","name":"3 Bed Smart (East)","r":[44.54,-180.7,9,12.58]},{"u":8,"type":"N","name":"3 Bed Prima (East)","r":[43.9,-196.1,12.22,13.39]}]},"13":{"scaleCheck":1.01,"units":[{"u":1,"type":"L","name":"3 Bed Prima (West)","r":[153.78,-179.7,10.84,14.16]},{"u":2,"type":"O","name":"3 Bed Prima (North)","r":[155.79,-157.76,11.51,11.96]},{"u":3,"type":"D","name":"3 Bed Smart (North)","r":[141.2,-157.76,11.51,9.31]},{"u":4,"type":"D","name":"3 Bed Smart (North)","r":[127.81,-157.76,11.04,9.31]},{"u":5,"type":"D","name":"3 Bed Smart (North)","r":[113.76,-157.76,11.38,9.31]},{"u":6,"type":"P","name":"3 Bed Prima (North)","r":[98.5,-160.22,12.78,11.77]},{"u":7,"type":"M","name":"3 Bed Prima (East)","r":[99.7,-178.57,11.04,13.03]},{"u":8,"type":"B","name":"2 Bed Plus (East)","r":[115.9,-178.04,8.57,12.5]},{"u":9,"type":"C","name":"2 Bed Plus (West)","r":[127.55,-178.24,8.97,12.7]},{"u":10,"type":"K","name":"3 Bed Prima (East)","r":[139.19,-179.17,11.71,13.63]}]}};
+const SITE_SCALE=0.98, NORTH_OFF=1.0, TOP=134.15, GF=4.5, FLOOR=3.05, NFL=41;
+const $=id=>document.getElementById(id);
+// scale site + units to calibrated metres
+const BOX=[];for(const t of Object.values(SITE.towers))for(const [x,z,w,d] of t.boxes)BOX.push([x*SITE_SCALE,z*SITE_SCALE,(x+w)*SITE_SCALE,(z+d)*SITE_SCALE]);
+for(const t of Object.values(UNITS))for(const u of t.units)u.r=u.r.map(v=>v*SITE_SCALE);
+
+/* ---- sun (NOAA) ---- */
+const LAT=17.3066,LON=78.4175,TZ=5.5,D2R=Math.PI/180;
+const doy=m=>Math.round((Date.UTC(2026,m-1,21)-Date.UTC(2026,0,0))/864e5);
+function solar(m,hr){const n=doy(m),g=2*Math.PI/365*(n-1+(hr-12)/24);
+  const eq=229.18*(0.000075+0.001868*Math.cos(g)-0.032077*Math.sin(g)-0.014615*Math.cos(2*g)-0.040849*Math.sin(2*g));
+  const dec=0.006918-0.399912*Math.cos(g)+0.070257*Math.sin(g)-0.006758*Math.cos(2*g)+0.000907*Math.sin(2*g)-0.002697*Math.cos(3*g)+0.00148*Math.sin(3*g);
+  const ha=((hr*60+eq+4*LON-60*TZ)/4-180)*D2R,phi=LAT*D2R;
+  const alt=Math.asin(Math.max(-1,Math.min(1,Math.sin(phi)*Math.sin(dec)+Math.cos(phi)*Math.cos(dec)*Math.cos(ha))));
+  const az=Math.atan2(Math.sin(ha),Math.cos(ha)*Math.sin(phi)-Math.tan(dec)*Math.cos(phi))+Math.PI;
+  return {alt,az,dec,eq};}
+function riseSet(m){const {dec,eq}=solar(m,12),phi=LAT*D2R;const ha=Math.acos(Math.cos(90.833*D2R)/(Math.cos(phi)*Math.cos(dec))-Math.tan(phi)*Math.tan(dec))/D2R;
+  return [(720-4*(LON+ha)-eq+TZ*60)/60,(720-4*(LON-ha)-eq+TZ*60)/60];}
+const STEP=1/6;
+function sunVec(s){const a=s.az+NORTH_OFF*D2R;return [Math.sin(a)*Math.cos(s.alt),Math.sin(s.alt),-Math.cos(a)*Math.cos(s.alt)];}
+function hitAny(px,py,pz,d){for(const [x0,z0,x1,z1] of BOX){if(px>=x0&&px<=x1&&pz>=z0&&pz<=z1)continue;let tmin=0,tmax=1e9;
+   for(const [o,v,lo,hi] of [[px,d[0],x0,x1],[py,d[1],0,TOP],[pz,d[2],z0,z1]]){if(Math.abs(v)<1e-9){if(o<lo||o>hi){tmin=1;tmax=0;break;}continue;}
+     let a=(lo-o)/v,b=(hi-o)/v;if(a>b)[a,b]=[b,a];tmin=Math.max(tmin,a);tmax=Math.min(tmax,b);if(tmin>tmax)break;}
+   if(tmin<=tmax&&tmax>0.01)return true;}return false;}
+const inside=(x,z)=>BOX.some(([x0,z0,x1,z1])=>x>=x0&&x<=x1&&z>=z0&&z<=z1);
+
+/* ---- sides of a flat ---- */
+const SIDE=[{k:'N',name:'north',n:[0,-1]},{k:'E',name:'east',n:[1,0]},{k:'S',name:'south',n:[0,1]},{k:'W',name:'west',n:[-1,0]}];
+function gapOf(u,s,all){const [x,z,w,d]=u.r;const mx=x+w/2,mz=z+d/2;let best=Infinity;
+  for(const o of all){if(o===u)continue;const [ox,oz,ow,od]=o.r;
+    if(s.k==="E"&&ox>=x+w-0.5&&oz<z+d&&oz+od>z)best=Math.min(best,ox-(x+w));
+    if(s.k==="W"&&ox+ow<=x+0.5&&oz<z+d&&oz+od>z)best=Math.min(best,x-(ox+ow));
+    if(s.k==="S"&&oz>=z+d-0.5&&ox<x+w&&ox+ow>x)best=Math.min(best,oz-(z+d));
+    if(s.k==="N"&&oz+od<=z+0.5&&ox<x+w&&ox+ow>x)best=Math.min(best,z-(oz+od));}
+  return best;}
+function sides(u){const [x,z,w,d]=u.r;const res=[];
+  for(const s of SIDE){const pts=[];for(const f of [0.2,0.5,0.8]){let px,pz;
+      if(s.k==='N'){px=x+w*f;pz=z;}else if(s.k==='S'){px=x+w*f;pz=z+d;}else if(s.k==='E'){px=x+w;pz=z+d*f;}else{px=x;pz=z+d*f;}
+      const ox=px+s.n[0]*1.6,oz=pz+s.n[1]*1.6;if(!inside(ox,oz))pts.push([px+s.n[0]*1.0,pz+s.n[1]*1.0]);}
+    if(pts.length>=2){const gap=gapOf(u,s,ALLU);res.push({...s,pts,len:(s.k==='N'||s.k==='S')?w:d,gap:gap<12?Math.max(1,gap):null});}}
+  return res;}
+function dayFor(side,m,h){const [r0,r1]=riseSet(m);const lit=[];
+  for(let t=r0;t<=r1;t+=STEP){const s=solar(m,t);if(s.alt<0.5*D2R){lit.push(0);continue;}const d=sunVec(s);
+    if(d[0]*side.n[0]+d[2]*side.n[1]<=0.03){lit.push(0);continue;}
+    let ok=0;for(const [px,pz] of side.pts)if(!hitAny(px,h,pz,d))ok++;lit.push(ok*2>=side.pts.length?1:0);}
+  return {r0,r1,lit};}
+const hm=v=>{let h=Math.floor(v),m=Math.round((v-h)*60);if(m===60){h++;m=0}return `${h}:${String(m).padStart(2,'0')}`;};
+const hrs=l=>l.reduce((a,b)=>a+b,0)*STEP;
+function windows(day){const w=[];let st=null;day.lit.forEach((v,i)=>{const t=day.r0+i*STEP;if(v&&st===null)st=t;if(!v&&st!==null){w.push([st,t]);st=null;}});if(st!==null)w.push([st,day.r1]);return w;}
+
+/* ---- picker ---- */
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const tw=$('tw'),fl=$('fl'),un=$('un');
+Object.keys(UNITS).sort((a,b)=>a-b).forEach(t=>tw.add(new Option('T-'+t.padStart(2,'0'),t)));
+for(let f=1;f<=NFL;f++)fl.add(new Option(f+([19,29,39].includes(f)?' (refuge)':''),f));
+function fillUnits(){const keep=un.value;un.innerHTML='';for(const u of UNITS[tw.value].units)un.add(new Option(String(u.u).padStart(2,'0')+' · Type '+u.type+' · '+u.name,u.u));if([...un.options].some(o=>o.value===keep))un.value=keep;}
+tw.addEventListener('change',()=>{fillUnits();render();});fl.addEventListener('change',render);un.addEventListener('change',render);
+let month=new Date().getMonth()+1;let ALLU=[];
+$('months').innerHTML=MON.map((m,i)=>`<button type="button" data-m="${i+1}" aria-pressed="${i+1===month}">${m}</button>`).join('');
+$('months').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;month=+b.dataset.m;[...$('months').children].forEach(x=>x.setAttribute('aria-pressed',x===b));render();});
+$('pick').addEventListener('submit',e=>{e.preventDefault();const v=$('fno').value.replace(/\D/g,'');const err=$('err');err.hidden=true;
+  if(v.length<5||v.length>6){err.textContent='Enter the flat number as tower, floor, flat, for example 51504 (Tower 5, floor 15, flat 04).';err.hidden=false;return;}
+  const t=String(+v.slice(0,v.length-4)),f=+v.slice(-4,-2),u=+v.slice(-2);
+  if(!UNITS[t]){err.textContent='There is no tower '+t+'. Towers run from 1 to 13.';err.hidden=false;return;}
+  if(f<1||f>NFL){err.textContent='Floor '+f+' is outside 1–'+NFL+'.';err.hidden=false;return;}
+  if(!UNITS[t].units.some(x=>x.u===u)){err.textContent='Tower '+t+' has flats 01–'+String(UNITS[t].units.length).padStart(2,'0')+' on each floor.';err.hidden=false;return;}
+  tw.value=t;fillUnits();fl.value=f;un.value=u;render();});
+
+/* ---- render ---- */
+function render(){
+  const t=tw.value,f=+fl.value,U=UNITS[t].units.find(x=>x.u===+un.value);
+  const h=GF+(f-1)*FLOOR+1.4;ALLU=UNITS[t].units;const sd=sides(U);
+  const per=sd.map(s=>({s,day:dayFor(s,month,h)}));
+  try{history.replaceState(null,'','#'+t+'-'+f+'-'+U.u);}catch(e){}
+  $('ttl').textContent=`T-${t.padStart(2,'0')} · Floor ${f} · Flat ${String(U.u).padStart(2,'0')}`;
+  $('sub').textContent=`Type ${U.type} · ${U.name}${[19,29,39].includes(f)?' · refuge floor, layout may differ':''}`;
+  // plate svg
+  const all=UNITS[t].units;let X0=1e9,Z0=1e9,X1=-1e9,Z1=-1e9;for(const u of all){const [x,z,w,d]=u.r;X0=Math.min(X0,x);Z0=Math.min(Z0,z);X1=Math.max(X1,x+w);Z1=Math.max(Z1,z+d);}
+  const pad=14,W=X1-X0+pad*2,H=Z1-Z0+pad*2,sx=x=>x-X0+pad,sz=z=>z-Z0+pad;
+  let g=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Floor plate of tower ${t} with flat ${U.u} highlighted"><rect x="0" y="0" width="${W}" height="${H}" fill="#FBFAF6"/>`;
+  for(const u of all){const [x,z,w,d]=u.r;const me=u===U;g+=`<rect x="${sx(x)}" y="${sz(z)}" width="${w}" height="${d}" fill="${me?'#20362E':'#E7E3DA'}" stroke="#fff" stroke-width=".5"/><text x="${sx(x+w/2)}" y="${sz(z+d/2)+1.6}" font-size="4.4" font-family="Inter,sans-serif" font-weight="700" text-anchor="middle" fill="${me?'#F6F3ED':'#6B6B64'}">${String(u.u).padStart(2,'0')}</text>`;}
+  for(const {s,day} of per){const [x,z,w,d]=U.r;const lit=hrs(day.lit)>0;const c=lit?'#D9921F':'#9AA3A6';let x1,z1,x2,z2;
+    if(s.k==='N'){x1=x;x2=x+w;z1=z2=z;}else if(s.k==='S'){x1=x;x2=x+w;z1=z2=z+d;}else if(s.k==='E'){x1=x2=x+w;z1=z;z2=z+d;}else{x1=x2=x;z1=z;z2=z+d;}
+    g+=`<line x1="${sx(x1)}" y1="${sz(z1)}" x2="${sx(x2)}" y2="${sz(z2)}" stroke="${c}" stroke-width="2.4" stroke-linecap="round"/>`;}
+  g+=`<g transform="translate(${W-8},10) rotate(${NORTH_OFF})"><path d="M0 -6 L3 3 L0 1.4 L-3 3 Z" fill="#9B7F45"/><text y="-8" font-size="4.2" font-family="Inter,sans-serif" font-weight="700" text-anchor="middle" fill="#9B7F45">N</text></g></svg>`;
+  $('plate').innerHTML=g;
+  // facts
+  const facts=per.map(({s,day})=>{const w=windows(day);const H=hrs(day.lit);return `<li><b>${s.name[0].toUpperCase()+s.name.slice(1)} wall</b> (${s.len.toFixed(0)} m${s.gap?`, faces a ${s.gap.toFixed(0)} m gap to the next flat`:``}): ${H>0?`sun ${w.map(([a,b])=>hm(a)+'–'+hm(b)).join(', ')} · <b>${H.toFixed(1)} h</b>`:'no direct sun'} on 21 ${MON[month-1]}${s.gap&&H>0?'. In a gap this narrow, sun reaches only the outer end of the wall, so windows set further in get much less.':''}</li>`;});
+  $('facts').innerHTML=facts.join('')||'<li>No outside wall found for this flat.</li>';
+  // strip
+  const T0=5.5,T1=19,SW=640,LH=34,top=26,Hs=top+per.length*LH+24,xt=v=>90+(v-T0)/(T1-T0)*(SW-100);
+  let st=`<svg viewBox="0 0 ${SW} ${Hs}" role="img" aria-label="Direct sun on each wall through the day">`;
+  for(let k=6;k<=19;k+=2)st+=`<line x1="${xt(k)}" y1="${top-6}" x2="${xt(k)}" y2="${Hs-20}" stroke="#E5DFD3"/><text x="${xt(k)}" y="${Hs-6}" font-size="11" font-family="Inter,sans-serif" text-anchor="middle" fill="#6B6B64">${k}:00</text>`;
+  const [r0,r1]=riseSet(month);st+=`<rect x="${xt(r0)}" y="${top-14}" width="${xt(r1)-xt(r0)}" height="5" fill="#F1E7D3"/><text x="${xt(r0)}" y="${top-17}" font-size="10" font-family="Inter,sans-serif" fill="#6B6B64">sunrise ${hm(r0)}</text><text x="${xt(r1)}" y="${top-17}" font-size="10" font-family="Inter,sans-serif" text-anchor="end" fill="#6B6B64">sunset ${hm(r1)}</text>`;
+  per.forEach(({s,day},i)=>{const y=top+i*LH;st+=`<text x="0" y="${y+15}" font-size="12.5" font-family="Inter,sans-serif" font-weight="600" fill="#1D1D1B">${s.name[0].toUpperCase()+s.name.slice(1)}</text>${s.gap?`<text x="0" y="${y+28}" font-size="9.5" font-family="Inter,sans-serif" fill="#6B6B64">${s.gap.toFixed(0)} m gap</text>`:``}<rect x="${xt(T0)}" y="${y+6}" width="${xt(T1)-xt(T0)}" height="16" rx="3" fill="#EFEAE0"/>`;
+    for(const [a,b] of windows(day))st+=`<rect x="${xt(a)}" y="${y+6}" width="${Math.max(2,xt(b)-xt(a))}" height="16" rx="3" fill="#D9921F"/>`;});
+  st+=`</svg>`;$('strip').innerHTML=st;
+  // year table
+  let tb=`<thead><tr><th>Wall</th>${MON.map((m,i)=>`<th class="${i+1===month?'cur':''}">${m}</th>`).join('')}</tr></thead><tbody>`;
+  for(const s of sd){tb+=`<tr><td><b>${s.name[0].toUpperCase()+s.name.slice(1)}</b>${s.gap?` <span style="color:#6B6B64;font-size:11px">(${s.gap.toFixed(0)} m gap)</span>`:``}</td>`;for(let m=1;m<=12;m++){const H=hrs(dayFor(s,m,h).lit);tb+=`<td class="${m===month?'cur':''}">${H>0?H.toFixed(1)+'h':'–'}</td>`;}tb+=`</tr>`;}
+  $('yr').innerHTML=tb+`</tbody>`;
+  $('to3d').href=`sun.html#flat-${t}-${f}-${U.u}`;
+  renderRooms(U,GF+(f-1)*FLOOR);
+}
+/* ================= ROOM BY ROOM (step 2) ================= */
+/* Unit-type plans for the room-by-room sun view.
+   Units: feet. Axes as drawn for the east-column orientation: x → east, z → south.
+   rooms:   name + floor rectangles [x,z,w,d] (sun is sampled on these floors)
+   open:    outdoor but roofed spaces (balcony, utility): floor rects, slab height `roof`,
+            and open `edges` to the sky: {x1,z1,x2,z2,lo,hi}
+   glaze:   light openings in a room's outer wall: {room, x1,z1,x2,z2 (the wall line), sill, head, to:'out'|<open-space id>}
+   mirrorX: the type is used mirrored left-right (Type F mirrors Type E). */
+const PLANS={
+ E:{label:'3 Bed Smart', verified:'Checked by an owner against the Type E sample flat and site photos',
+  ext:[-0.75,-0.75,31.5,39.35],
+  rooms:[
+   {id:'br1',name:'Bedroom 1',rects:[[0,0,11.25,12.6]]},
+   {id:'t1',name:'Toilet 1',rects:[[11.75,0,6.5,9]]},
+   {id:'br2',name:'Bedroom 2',rects:[[18.75,0,12,12.6]]},
+   {id:'hall',name:'Living & dining',rects:[[0,13.1,25.5,12]]},
+   {id:'mbr',name:'Master bedroom',rects:[[0,25.6,13,13]]},
+   {id:'t2',name:'Toilet 2',rects:[[13.5,29.9,6.5,8.7]]},
+   {id:'kit',name:'Kitchen',rects:[[20.5,25.6,10.25,8.7]]},
+   {id:'bal',name:'Balcony',rects:[[26,13.1,5,11.8]],outdoor:true},
+   {id:'ut',name:'Utility',rects:[[20.5,34.8,10.5,4]],outdoor:true}],
+  open:{
+   bal:{rects:[[26,13.1,5,11.8]],roof:9.5,edges:[{x1:31.25,z1:13.1,x2:31.25,z2:24.9,lo:0,hi:9.5}]},
+   ut:{rects:[[20.5,34.8,10.5,4]],roof:9.5,edges:[{x1:31.25,z1:34.8,x2:31.25,z2:38.8,lo:3.25,hi:9.5}]}},
+  glaze:[
+   {room:'br1',x1:3.7,z1:-0.4,x2:9.0,z2:-0.4,sill:2.25,head:6.6,to:'out'},
+   {room:'t1',x1:12.4,z1:-0.4,x2:16.4,z2:-0.4,sill:5,head:7,to:'out'},
+   {room:'br2',x1:31.1,z1:2.54,x2:31.1,z2:10.04,sill:1.85,head:6.43,to:'out'},
+   {room:'hall',x1:25.75,z1:14.75,x2:25.75,z2:23.45,sill:0,head:7.2,to:'bal'},
+   {room:'mbr',x1:4.6,z1:38.95,x2:10.4,z2:38.95,sill:2,head:7,to:'out'},
+   {room:'t2',x1:15.6,z1:38.95,x2:19,z2:38.95,sill:5,head:7,to:'out'},
+   {room:'kit',x1:25.5,z1:34.55,x2:28.3,z2:34.55,sill:3.5,head:6.5,to:'ut'},
+   {room:'kit',x1:22.8,z1:34.55,x2:25.5,z2:34.55,sill:0,head:7,to:'ut'},
+   {room:'bal',x1:31.25,z1:13.1,x2:31.25,z2:24.9,sill:0,head:9.5,to:'out'},
+   {room:'ut',x1:31.25,z1:34.8,x2:31.25,z2:38.8,sill:3.25,head:9.5,to:'out'}],
+  walls:[[-0.75,-0.75,32.25,0.75],[-0.75,38.6,32.25,0.75],[-0.75,-0.75,0.75,40.1],[30.75,-0.75,0.75,13.85]]
+ }
+};
+PLANS.F=Object.assign({},PLANS.E,{label:'3 Bed Smart (mirror of Type E)',mirrorX:true});
+
+const FT=0.3048;
+function planFor(type){const P=PLANS[type];if(!P)return null;const e0=P.ext[0],e1=P.ext[2];const mx=v=>P.mirrorX?e0+e1-v:v;
+  const mr=([x,z,w,d])=>P.mirrorX?[e0+e1-x-w,z,w,d]:[x,z,w,d];
+  const me=e=>({...e,x1:mx(e.x1),x2:mx(e.x2)});
+  const glaze=P.glaze.map(me);const open=Object.fromEntries(Object.entries(P.open).map(([k,o])=>[k,{...o,rects:o.rects.map(mr),edges:o.edges.map(me)}]));
+  return {...P,rooms:P.rooms.map(r=>({...r,rects:r.rects.map(mr)})),walls:P.walls.map(mr),open,glaze};}
+function exits(pl){const ex=[];for(const g of pl.glaze)if(g.to==='out')ex.push(g);for(const o of Object.values(pl.open))for(const e of o.edges)ex.push(e);return ex;}
+function edgeNormal(pl,e){const [x0,z0,x1,z1]=pl.ext;const cx=(x0+x1)/2,cz=(z0+z1)/2;
+  if(e.x1===e.x2)return [e.x1>cx?1:-1,0];return [0,e.z1>cz?1:-1];}
+function toSite(U,pl,px,pz){const [e0,f0,e1,f1]=pl.ext;const [x,z,w,d]=U.r;return [x+(px-e0)/(e1-e0)*w,z+(pz-f0)/(f1-f0)*d];}
+/* which openings to the outside see the sun at one moment: sun in front of the wall and no other tower in the way */
+function exitLit(U,pl,base,s,d){const m=new Map();for(const e of exits(pl)){const n=edgeNormal(pl,e);
+   if(d[0]*n[0]+d[2]*n[1]<=0.02){m.set(e,false);continue;}
+   const [sx,sz]=toSite(U,pl,(e.x1+e.x2)/2,(e.z1+e.z2)/2);const lo=e.sill!==undefined?e.sill:e.lo,hi=e.head!==undefined?e.head:e.hi;
+   const h=base+Math.max(1.2,(lo+hi)/2*FT);
+   m.set(e,!hitAny(sx+n[0]*1.2,h,sz+n[1]*1.2,d));}return m;}
+function crossT(px,pz,dx,dz,e){if(e.x1===e.x2){if(Math.abs(dx)<1e-6)return null;const t=(e.x1-px)/dx;if(t<=0)return null;const z=pz+dz*t;return (z>=Math.min(e.z1,e.z2)&&z<=Math.max(e.z1,e.z2))?t:null;}
+  if(Math.abs(dz)<1e-6)return null;const t=(e.z1-pz)/dz;if(t<=0)return null;const x=px+dx*t;return (x>=Math.min(e.x1,e.x2)&&x<=Math.max(e.x1,e.x2))?t:null;}
+/* is a floor point in sun: trace back toward the sun through the room's openings (and an open balcony/utility, if any) */
+function pointLit(pl,room,px,pz,s,ex){const a=s.az+NORTH_OFF*D2R,dx=Math.sin(a),dz=-Math.cos(a),ta=Math.tan(s.alt);
+  for(const g of pl.glaze){if(g.room!==room)continue;const t=crossT(px,pz,dx,dz,g);if(t===null)continue;const h=t*ta;if(h<g.sill||h>g.head)continue;
+    if(g.to==='out'){if(ex.get(g))return true;continue;}
+    const o=pl.open[g.to];for(const e of o.edges){const t2=crossT(px,pz,dx,dz,e);if(t2===null||t2<t)continue;const h2=t2*ta;if(h2>=e.lo&&h2<=Math.min(e.hi,o.roof)&&ex.get(e))return true;}}
+  return false;}
+function roomPts(r,step){const p=[];for(const [x,z,w,d] of r.rects)for(let a=x+step/2;a<x+w;a+=step)for(let b=z+step/2;b<z+d;b+=step)p.push([a,b]);return p;}
+function roomDay(U,pl,base,m){const [r0,r1]=riseSet(m);const res=Object.fromEntries(pl.rooms.map(r=>[r.id,[]]));const pts=Object.fromEntries(pl.rooms.map(r=>[r.id,roomPts(r,2)]));
+  for(let t=r0;t<=r1;t+=STEP){const s=solar(m,t);if(s.alt<0.5*D2R){for(const r of pl.rooms)res[r.id].push(0);continue;}const d=sunVec(s);const ex=exitLit(U,pl,base,s,d);
+    for(const r of pl.rooms){let n=0;for(const [x,z] of pts[r.id])if(pointLit(pl,r.id,x,z,s,ex))n++;res[r.id].push(n/pts[r.id].length);}}
+  return {r0,r1,res};}
+
+let roomTime=8,roomPlay=null,roomJob=0;
+function renderRooms(U,base){const box=$('rooms');const pl=planFor(U.type);if(roomPlay){clearInterval(roomPlay);roomPlay=null;}
+  if(!pl){box.innerHTML=`<div class="panel"><h3>Room by room</h3><p class="sub">Type ${U.type} hasn't been traced yet. Room-by-room sun is ready for Types ${Object.keys(PLANS).join(' and ')} so far, and more types are being added. If you own a Type ${U.type} flat, a photo of your unit plan helps.</p></div>`;return;}
+  const day=roomDay(U,pl,base,month);
+  const [r0,r1]=riseSet(month);roomTime=Math.min(Math.max(roomTime,r0),r1);
+  const S=13,[x0,z0,x1,z1]=pl.ext,W=(x1-x0)*S,H=(z1-z0)*S,X=v=>(v-x0)*S,Z=v=>(v-z0)*S;
+  box.innerHTML=`<div class="panel"><h3>Room by room</h3><p class="sub">Type ${U.type} · ${pl.label}. Orange is direct sun on the floor of each room, 21 ${MON[month-1]}. ${pl.verified||''}.</p>
+   <div class="rgrid"><div class="rplan"><svg id="rsvg" viewBox="-30 -30 ${W+60} ${H+60}" role="img" aria-label="Plan of the flat with sun patches"></svg>
+   <label class="rlab" for="rt">Time · <b id="rtl"></b> IST</label><input type="range" id="rt" min="${r0.toFixed(3)}" max="${r1.toFixed(3)}" step="0.0833" value="${roomTime}"><button type="button" class="rplay" id="rplay">Play the day</button></div>
+   <div><table class="yr" id="rday"></table><div class="tablewrap"><table class="yr" id="ryear"></table></div></div></div></div>`;
+  function draw(){const s=solar(month,roomTime);let g=`<rect x="-30" y="-30" width="${W+60}" height="${H+60}" fill="#FBFAF6"/>`;
+    for(const r of pl.rooms)for(const [x,z,w,d] of r.rects)g+=`<rect x="${X(x)}" y="${Z(z)}" width="${w*S}" height="${d*S}" fill="${r.outdoor?'#EEF0EC':'#F4F1EA'}" stroke="#CFC8BA" stroke-width="1"/>`;
+    if(s.alt>0.5*D2R){const d=sunVec(s);const ex=exitLit(U,pl,base,s,d);const st=0.5;
+      for(const r of pl.rooms)for(const [x,z] of roomPts(r,st))if(pointLit(pl,r.id,x,z,s,ex))g+=`<rect x="${X(x-st/2)}" y="${Z(z-st/2)}" width="${st*S+0.6}" height="${st*S+0.6}" fill="#E39A2A" opacity=".75"/>`;}
+    for(const w of pl.walls)g+=`<rect x="${X(w[0])}" y="${Z(w[1])}" width="${w[2]*S}" height="${w[3]*S}" fill="#2B2B28"/>`;
+    for(const e of pl.glaze)g+=`<line x1="${X(e.x1)}" y1="${Z(e.z1)}" x2="${X(e.x2)}" y2="${Z(e.z2)}" stroke="#5FA6C4" stroke-width="5"/>`;
+    for(const r of pl.rooms){const [x,z,w,d]=r.rects[0];g+=`<text x="${X(x+w/2)}" y="${Z(z+d/2)}" font-size="12" font-family="Inter,sans-serif" font-weight="600" text-anchor="middle" fill="#3A3A37" paint-order="stroke" stroke="#FBFAF6" stroke-width="3">${r.name}</text>`;}
+    g+=`<g transform="translate(${W+10},-8) rotate(${NORTH_OFF})"><path d="M0 -14 L7 6 L0 2 L-7 6 Z" fill="#9B7F45"/><text y="-18" font-size="11" font-family="Inter,sans-serif" font-weight="700" text-anchor="middle" fill="#9B7F45">N</text></g>`;
+    $('rsvg').innerHTML=g;$('rtl').textContent=hm(roomTime)+(s.alt<=0.5*D2R?' (sun down)':'');}
+  let dt=`<thead><tr><th>Room</th><th>Sun comes in · 21 ${MON[month-1]}</th><th>Hours</th></tr></thead><tbody>`;
+  for(const r of pl.rooms){const lit=day.res[r.id].map(v=>v>0.04?1:0);const w=windows({r0:day.r0,r1:day.r1,lit});const Hh=hrs(lit);
+    dt+=`<tr><td><b>${r.name}</b></td><td>${Hh>0?w.map(([a,b])=>hm(a)+'–'+hm(b)).join(', '):'no direct sun'}</td><td>${Hh>0?Hh.toFixed(1)+' h':'–'}</td></tr>`;}
+  $('rday').innerHTML=dt+'</tbody>';
+  let yt=`<thead><tr><th>Hours</th>${MON.map((m,i)=>`<th class="${i+1===month?'cur':''}">${m}</th>`).join('')}</tr></thead><tbody>`;const all={};
+  for(const r of pl.rooms)yt+=`<tr><td><b>${r.name}</b></td>${MON.map((_,i)=>`<td id="ry-${r.id}-${i+1}" class="${i+1===month?'cur':''}">…</td>`).join('')}</tr>`;
+  $('ryear').innerHTML=yt+'</tbody>';
+  const job=++roomJob;let mm=1;(function next(){if(job!==roomJob||mm>12)return;const dd=(mm===month)?day:roomDay(U,pl,base,mm);for(const r of pl.rooms){const Hh=hrs(dd.res[r.id].map(v=>v>0.04?1:0));const c=document.getElementById(`ry-${r.id}-${mm}`);if(c)c.textContent=Hh>0?Hh.toFixed(1):'–';}mm++;setTimeout(next,0);})();
+  const rt=$('rt');rt.addEventListener('input',()=>{roomTime=+rt.value;draw();});
+  $('rplay').addEventListener('click',()=>{const b=$('rplay');if(roomPlay){clearInterval(roomPlay);roomPlay=null;b.textContent='Play the day';return;}
+    b.textContent='Pause';roomTime=r0;roomPlay=setInterval(()=>{roomTime+=1/6;if(roomTime>r1){clearInterval(roomPlay);roomPlay=null;b.textContent='Play the day';roomTime=r1;}rt.value=roomTime;draw();},120);});
+  draw();}
+
+// initial selection: from #t-f-u, else T-01 floor 20 flat 01
+const m=/^#(\d+)-(\d+)-(\d+)$/.exec(location.hash||'');
+tw.value=m&&UNITS[m[1]]?m[1]:'1';fillUnits();fl.value=m?Math.min(NFL,Math.max(1,+m[2])):20;if(m&&UNITS[tw.value].units.some(x=>x.u===+m[3]))un.value=m[3];
+render();
+})();
+</script>
+</body>
+</html>
