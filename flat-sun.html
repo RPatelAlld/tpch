@@ -68,6 +68,7 @@ table.yr td.cur,table.yr th.cur{background:var(--sun-soft)}
 .rplay,.to3d{font:600 13px var(--sans);background:var(--forest);color:var(--ivory);border:0;border-radius:3px;padding:8px 14px;cursor:pointer;margin-top:12px;display:inline-block}
 .to3d{background:transparent;color:var(--forest);border:1px solid var(--forest)}
 #rday td{text-align:left;white-space:normal}
+.earth{margin-top:14px}.earth .to3d{margin:6px 6px 0 0;padding:6px 12px}.elab{font-size:12px;color:var(--mute);font-weight:600}
 table.yr th:not(:first-child),table.yr td:not(:first-child){cursor:pointer}
 table.yr td:not(:first-child):hover,table.yr th:not(:first-child):hover{background:#F1E7D3}
 #rday td,#rday th{cursor:default!important;background:none!important}
@@ -120,6 +121,7 @@ table.yr td:not(:first-child):hover,table.yr th:not(:first-child):hover{backgrou
           <div class="legend"><span><i style="background:var(--sun)"></i>Outside wall with sun that day</span><span><i style="background:#9AA3A6"></i>Outside wall, no direct sun</span><span><i style="background:var(--shade)"></i>Other flats on the floor</span></div>
           <ul class="facts" id="facts"></ul>
           <a class="to3d" id="to3d" href="sun.html">See this flat in 3D →</a>
+          <div class="earth" id="earth"></div>
         </div>
         <div class="panel">
           <h3>Through the day</h3>
@@ -252,6 +254,7 @@ function render(){
   $('to3d').href=`sun.html#flat-${t}-${f}-${U.u}`;
   renderRooms(U,GF+(f-1)*FLOOR);
   renderWind(U,h,sd);
+  renderEarth(U,h,sd);
 }
 /* ================= ROOM BY ROOM (step 2) ================= */
 /* Unit-type plans for the room-by-room sun view.
@@ -921,6 +924,16 @@ function renderWind(U,h,sd){const box=$('wind');const mo=WIND.m[month-1];const v
 document.addEventListener('click',e=>{const c=e.target.closest('table.yr th, table.yr td');if(!c||c.cellIndex<1)return;
   const th=c.closest('table').querySelector('thead tr')?.children[c.cellIndex];const i=th?MON.indexOf(th.textContent.trim()):-1;if(i<0||i+1===month)return;
   const y=scrollY;const b=document.querySelector(`#months button[data-m="${i+1}"]`);if(b){b.click();requestAnimationFrame(()=>scrollTo(0,y));}});
+/* ================= LOOK OUT IN GOOGLE EARTH ================= */
+/* Site origin (0,0) georeferenced on Google satellite imagery (Nov 2026), about ±20 m. Ground ≈ 573 m above sea level. */
+const GEO={lat:17.30594,lon:78.41756,mLat:9.044e-6,mLon:9.409e-6,ground:573};
+function earthUrl(U,s,h){const [x,z,w,d]=U.r;let px=x+w/2,pz=z+d/2;
+  if(s.k==='N')pz=z-4;else if(s.k==='S')pz=z+d+4;else if(s.k==='E')px=x+w+4;else px=x-4;
+  const lat=GEO.lat-pz*GEO.mLat,lon=GEO.lon+px*GEO.mLon,hd=(WALLAZ[s.k]-NORTH_OFF+360)%360;
+  return `https://earth.google.com/web/@${lat.toFixed(6)},${lon.toFixed(6)},${Math.round(GEO.ground+h)}a,2d,70y,${hd.toFixed(0)}h,86t,0r`;}
+function renderEarth(U,h,all){const box=$("earth");if(!box)return;const sd=all.filter(s=>!s.gap||s.gap>=8);
+  box.innerHTML=sd.length?`<span class="elab">Look out in Google Earth:</span> `+sd.map(s=>`<a class="to3d" target="_blank" rel="noopener" href="${earthUrl(U,s,h)}">${s.name[0].toUpperCase()+s.name.slice(1)} ↗</a>`).join(' ')+
+   `<p class="sub" style="margin-top:8px">Opens Google Earth at your floor's height, just outside that wall. Google's imagery is from May 2026: TPCH's own towers are shown half-built or not yet started, so the finished towers will block more of the view than you see there. Open walls only; walls facing a narrow gap are left out.</p>`:'';}
 
 // initial selection: from #t-f-u, else T-01 floor 20 flat 01
 const m=/^#(\d+)-(\d+)-(\d+)$/.exec(location.hash||'');
