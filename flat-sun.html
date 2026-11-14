@@ -287,6 +287,66 @@ const PLANS={
  }
 };
 PLANS.F=Object.assign({},PLANS.E,{label:'3 Bed Smart (mirror of Type E)',mirrorX:true});
+/* Type D (3 Bed Smart, north entrance): T-07/T-11/T-13 flats 3–5. Traced from brochure p.91 at a consistent ~30 px/ft. */
+PLANS.D={label:'3 Bed Smart', verified:'Traced from the brochure plan; not yet checked by a Type D owner',
+ ext:[0,0,37.5,33.33],
+ rooms:[
+  {id:'br1',name:'Bedroom 1',rects:[[0.67,0.5,12,11.17]]},
+  {id:'t2',name:'Toilet 2',rects:[[0.67,12,8,5.5]]},
+  {id:'mbr',name:'Master bedroom',rects:[[0.67,17.83,12,15.17]]},
+  {id:'hall',name:'Living & dining',rects:[[13.17,0.5,11.66,25.33],[8.67,11.67,4.5,6.16]]},
+  {id:'br2',name:'Bedroom 2',rects:[[25.5,0.5,11.5,11.17]]},
+  {id:'t1',name:'Toilet 1',rects:[[28.67,12,8.33,5.5]]},
+  {id:'kit',name:'Kitchen',rects:[[25.33,17.83,11.67,8]]},
+  {id:'bal',name:'Balcony',rects:[[13.33,26.17,11.5,6.83]],outdoor:true},
+  {id:'ut',name:'Utility',rects:[[25.33,26.17,11.67,6.83]],outdoor:true}],
+ open:{
+  bal:{rects:[[13.33,26.17,11.5,6.83]],roof:9.5,edges:[{x1:13.33,z1:33.0,x2:24.83,z2:33.0,lo:0,hi:9.5}]},
+  ut:{rects:[[25.33,26.17,11.67,6.83]],roof:9.5,edges:[{x1:25.33,z1:33.0,x2:37.0,z2:33.0,lo:3.25,hi:9.5}]}},
+ glaze:[
+  {room:'br1',x1:0.67,z1:0.25,x2:8.5,z2:0.25,sill:2.25,head:6.75,to:'out'},
+  {room:'br1',x1:0.25,z1:0.5,x2:0.25,z2:6.67,sill:2.25,head:6.75,to:'out'},
+  {room:'t2',x1:0.25,z1:12.5,x2:0.25,z2:17,sill:5,head:7,to:'out'},
+  {room:'mbr',x1:0.25,z1:21.17,x2:0.25,z2:31.83,sill:2,head:7,to:'out'},
+  {room:'br2',x1:30,z1:0.25,x2:36.67,z2:0.25,sill:2.25,head:6.75,to:'out'},
+  {room:'br2',x1:37.25,z1:0.5,x2:37.25,z2:11.5,sill:2.25,head:6.75,to:'out'},
+  {room:'t1',x1:37.25,z1:12.5,x2:37.25,z2:17,sill:5,head:7,to:'out'},
+  {room:'kit',x1:37.25,z1:18.5,x2:37.25,z2:24.67,sill:3.5,head:6.5,to:'out'},
+  {room:'hall',x1:13.33,z1:26.0,x2:23.67,z2:26.0,sill:0,head:7.2,to:'bal'},
+  {room:'kit',x1:32.17,z1:26.0,x2:34.83,z2:26.0,sill:0,head:7,to:'ut'},
+  {room:'bal',x1:13.33,z1:33.0,x2:24.83,z2:33.0,sill:0,head:9.5,to:'out'},
+  {room:'ut',x1:25.33,z1:33.0,x2:37.0,z2:33.0,sill:3.25,head:9.5,to:'out'}],
+ walls:[[0,0,37.5,0.5],[0,0,0.5,33.33],[37,0,0.5,33.33]]};
+/* Type G (3 Bed Prima, north entrance): T-04/T-06 flats 2–5. Traced from brochure p.94 at ~30.5 px/ft. */
+PLANS.G={label:'3 Bed Prima', verified:'Traced from the brochure plan; not yet checked by a Type G owner',
+ ext:[0,0,38.7,38.7],
+ rooms:[
+  {id:'br1',name:'Bedroom 1',rects:[[0.66,0.66,12.29,13.14]]},
+  {id:'t3',name:'Toilet 3',rects:[[0.66,14.1,6.74,9.3]]},
+  {id:'mbr',name:'Master bedroom',rects:[[0.66,23.8,12.29,14.6]]},
+  {id:'hall',name:'Living & dining',rects:[[13.3,0.66,11.9,31.34],[7.4,14.1,5.9,9.3]]},
+  {id:'br2',name:'Bedroom 2',rects:[[25.7,0.66,12.5,11.44]]},
+  {id:'t2',name:'Toilet 2',rects:[[29.5,12.1,8.7,6.1]]},
+  {id:'t1',name:'Toilet 1',rects:[[25.7,18.2,9.5,6.2]]},
+  {id:'kit',name:'Kitchen',rects:[[25.7,24.9,12.3,8.7]]},
+  {id:'bal',name:'Balcony',rects:[[13.4,32.3,11.8,6.1]],outdoor:true},
+  {id:'ut',name:'Utility',rects:[[28,34.1,10.2,4.3]],outdoor:true}],
+ open:{
+  bal:{rects:[[13.4,32.3,11.8,6.1]],roof:9.5,edges:[{x1:13.4,z1:38.6,x2:25.2,z2:38.6,lo:0,hi:9.5}]},
+  ut:{rects:[[28,34.1,10.2,4.3]],roof:9.5,edges:[{x1:28,z1:38.6,x2:38.2,z2:38.6,lo:3.25,hi:9.5}]}},
+ glaze:[
+  {room:'br1',x1:0.8,z1:0.33,x2:7.7,z2:0.33,sill:2.25,head:6.75,to:'out'},
+  {room:'br1',x1:0.33,z1:5.1,x2:0.33,z2:13.6,sill:2.25,head:6.75,to:'out'},
+  {room:'t3',x1:0.33,z1:14.5,x2:0.33,z2:23,sill:5,head:7,to:'out'},
+  {room:'mbr',x1:0.33,z1:26.5,x2:0.33,z2:38,sill:2,head:7,to:'out'},
+  {room:'br2',x1:38.4,z1:0.66,x2:38.4,z2:7,sill:2.25,head:6.75,to:'out'},
+  {room:'t2',x1:38.4,z1:12.5,x2:38.4,z2:18,sill:5,head:7,to:'out'},
+  {room:'t1',x1:35.6,z1:18.6,x2:35.6,z2:24,sill:5,head:7,to:'out'},
+  {room:'hall',x1:13.6,z1:32.15,x2:24.8,z2:32.15,sill:0,head:7.2,to:'bal'},
+  {room:'kit',x1:33.3,z1:33.9,x2:36.1,z2:33.9,sill:0,head:7,to:'ut'},
+  {room:'bal',x1:13.4,z1:38.6,x2:25.2,z2:38.6,sill:0,head:9.5,to:'out'},
+  {room:'ut',x1:28,z1:38.6,x2:38.2,z2:38.6,sill:3.25,head:9.5,to:'out'}],
+ walls:[[0,0,38.7,0.66],[0,0,0.66,38.7],[38.04,0,0.66,38.7]]};
 
 const FT=0.3048;
 function planFor(type){const P=PLANS[type];if(!P)return null;const e0=P.ext[0],e1=P.ext[2];const mx=v=>P.mirrorX?e0+e1-v:v;
@@ -303,7 +363,10 @@ function exitLit(U,pl,base,s,d){const m=new Map();for(const e of exits(pl)){cons
    if(d[0]*n[0]+d[2]*n[1]<=0.02){m.set(e,false);continue;}
    const [sx,sz]=toSite(U,pl,(e.x1+e.x2)/2,(e.z1+e.z2)/2);const lo=e.sill!==undefined?e.sill:e.lo,hi=e.head!==undefined?e.head:e.hi;
    const h=base+Math.max(1.2,(lo+hi)/2*FT);
-   m.set(e,!hitAny(sx+n[0]*1.2,h,sz+n[1]*1.2,d));}return m;}
+   const ox=sx+n[0]*1.2,oz=sz+n[1]*1.2;
+   /* a window whose outside lies inside the tower footprint looks into a corridor or a narrow light well: no direct sun */
+   if(inside(ox,oz)){m.set(e,false);continue;}
+   m.set(e,!hitAny(ox,h,oz,d));}return m;}
 function crossT(px,pz,dx,dz,e){if(e.x1===e.x2){if(Math.abs(dx)<1e-6)return null;const t=(e.x1-px)/dx;if(t<=0)return null;const z=pz+dz*t;return (z>=Math.min(e.z1,e.z2)&&z<=Math.max(e.z1,e.z2))?t:null;}
   if(Math.abs(dz)<1e-6)return null;const t=(e.z1-pz)/dz;if(t<=0)return null;const x=px+dx*t;return (x>=Math.min(e.x1,e.x2)&&x<=Math.max(e.x1,e.x2))?t:null;}
 /* is a floor point in sun: trace back toward the sun through the room's openings (and an open balcony/utility, if any) */
@@ -320,7 +383,7 @@ function roomDay(U,pl,base,m){const [r0,r1]=riseSet(m);const res=Object.fromEntr
 
 let roomTime=8,roomPlay=null,roomJob=0;
 function renderRooms(U,base){const box=$('rooms');const pl=planFor(U.type);if(roomPlay){clearInterval(roomPlay);roomPlay=null;}
-  if(!pl){box.innerHTML=`<div class="panel"><h3>Room by room</h3><p class="sub">Type ${U.type} hasn't been traced yet. Room-by-room sun is ready for Types ${Object.keys(PLANS).join(' and ')} so far, and more types are being added. If you own a Type ${U.type} flat, a photo of your unit plan helps.</p></div>`;return;}
+  if(!pl){box.innerHTML=`<div class="panel"><h3>Room by room</h3><p class="sub">Type ${U.type} hasn't been traced yet. Room-by-room sun is ready for Types ${(k=>k.slice(0,-1).join(', ')+' and '+k[k.length-1])(Object.keys(PLANS).sort())} so far, and more types are being added. If you own a Type ${U.type} flat, a photo of your unit plan helps.</p></div>`;return;}
   const day=roomDay(U,pl,base,month);
   const [r0,r1]=riseSet(month);roomTime=Math.min(Math.max(roomTime,r0),r1);
   const S=13,[x0,z0,x1,z1]=pl.ext,W=(x1-x0)*S,H=(z1-z0)*S,X=v=>(v-x0)*S,Z=v=>(v-z0)*S;
