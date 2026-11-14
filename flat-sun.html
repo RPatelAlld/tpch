@@ -68,6 +68,9 @@ table.yr td.cur,table.yr th.cur{background:var(--sun-soft)}
 .rplay,.to3d{font:600 13px var(--sans);background:var(--forest);color:var(--ivory);border:0;border-radius:3px;padding:8px 14px;cursor:pointer;margin-top:12px;display:inline-block}
 .to3d{background:transparent;color:var(--forest);border:1px solid var(--forest)}
 #rday td{text-align:left;white-space:normal}
+table.yr th:not(:first-child),table.yr td:not(:first-child){cursor:pointer}
+table.yr td:not(:first-child):hover,table.yr th:not(:first-child):hover{background:#F1E7D3}
+#rday td,#rday th{cursor:default!important;background:none!important}
 @media (max-width:900px){.result,.rgrid{grid-template-columns:minmax(0,1fr)}}
 </style>
 </head>
@@ -914,6 +917,10 @@ function renderWind(U,h,sd){const box=$('wind');const mo=WIND.m[month-1];const v
    <div><ul class="facts"><li>Mostly from the <b>${WNAME[md.d]}</b> (${Math.round(md.p)}% of hours).</li><li>Average about <b>${Math.round(v)} km/h</b> at your floor (${Math.round(mo.v10)} km/h near the ground). Gusts near the ground pass ${mo.g90} km/h about one hour in ten.</li>${walls}</ul>
    <div class="tablewrap"><table class="yr">${yt}</tbody></table></div></div></div>
    <p class="sub" style="margin-top:10px">Source: <a href="https://open-meteo.com/" style="text-decoration:underline">Open-Meteo</a> historical weather (ERA5 reanalysis). Directions are where the wind blows from.</p></div>`;}
+/* any month column in any table on the page picks that month, like the month buttons */
+document.addEventListener('click',e=>{const c=e.target.closest('table.yr th, table.yr td');if(!c||c.cellIndex<1)return;
+  const th=c.closest('table').querySelector('thead tr')?.children[c.cellIndex];const i=th?MON.indexOf(th.textContent.trim()):-1;if(i<0||i+1===month)return;
+  const y=scrollY;const b=document.querySelector(`#months button[data-m="${i+1}"]`);if(b){b.click();requestAnimationFrame(()=>scrollTo(0,y));}});
 
 // initial selection: from #t-f-u, else T-01 floor 20 flat 01
 const m=/^#(\d+)-(\d+)-(\d+)$/.exec(location.hash||'');
