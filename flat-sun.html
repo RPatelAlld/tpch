@@ -409,6 +409,56 @@ PLANS.I=derive(PLANS.J,{ext:[5.4,-2.3,43.4,44.9],verified:"Derived from the trac
          {room:"br2",x1:42.8,z1:4,x2:42.8,z2:15,sill:2.25,head:6.75,to:"out"},
          {room:"bal3",x1:31.7,z1:-2.25,x2:43.3,z2:-2.25,sill:0,head:9.5,to:"out"},
          {room:"bal3",x1:43.35,z1:-2.2,x2:43.35,z2:2.8,sill:0,head:9.5,to:"out"}]});
+/* Type R (3 Bed Plus, east entrance, balconies west): T-02 flats 5–8, T-04 flats 6–7, T-10 flats 3–6.
+   Traced from brochure p.106 at ~30.8 px/ft. */
+PLANS.R={label:'3 Bed Plus', verified:'Traced from the brochure plan; not yet checked by a Type R owner',
+ ext:[0,0,43.0,48.5],
+ rooms:[
+  {id:'br1',name:'Bedroom 1',rects:[[5.5,3.6,11.4,12.5]]},
+  {id:'t1',name:'Toilet 1',rects:[[17.7,3.6,6.3,8.9]]},
+  {id:'t2',name:'Toilet 2',rects:[[24.7,3.6,6.1,8.9]]},
+  {id:'br2',name:'Bedroom 2',rects:[[31.5,3.6,10.9,12.5]]},
+  {id:'hall',name:'Living & dining',rects:[[7.6,16.7,35.3,12.7],[17.9,12.7,13.1,4.0]]},
+  {id:'mbr',name:'Master bedroom',rects:[[0.5,29.9,13.6,15.0]]},
+  {id:'t3',name:'Toilet 3',rects:[[15.0,35.1,6.1,9.8]]},
+  {id:'study',name:'Study',rects:[[21.9,33.8,7.6,11.1]]},
+  {id:'kit',name:'Kitchen',rects:[[30.2,30.0,12.2,10.1]]},
+  {id:'bal1',name:'Bedroom balcony',rects:[[0.2,3.4,4.7,13.0]],outdoor:true},
+  {id:'bal',name:'Living balcony',rects:[[0.2,16.7,6.9,12.2]],outdoor:true},
+  {id:'ut',name:'Utility',rects:[[30.2,40.6,12.7,4.2]],outdoor:true}],
+ open:{
+  bal1:{rects:[[0.2,3.4,4.7,13.0]],roof:9.5,edges:[{x1:0.1,z1:3.4,x2:0.1,z2:16.4,lo:0,hi:9.5}]},
+  bal:{rects:[[0.2,16.7,6.9,12.2]],roof:9.5,edges:[{x1:0.1,z1:16.7,x2:0.1,z2:28.9,lo:0,hi:9.5}]},
+  ut:{rects:[[30.2,40.6,12.7,4.2]],roof:9.5,edges:[{x1:30.2,z1:44.9,x2:42.9,z2:44.9,lo:3.25,hi:9.5}]}},
+ glaze:[
+  {room:'br1',x1:5.8,z1:3.35,x2:12.5,z2:3.35,sill:2.25,head:6.75,to:'out'},
+  {room:'br1',x1:5.2,z1:3.6,x2:5.2,z2:15.8,sill:0,head:7,to:'bal1'},
+  {room:'t1',x1:18,z1:3.1,x2:23.5,z2:3.1,sill:5,head:7,to:'out'},
+  {room:'t2',x1:25,z1:3.1,x2:30.5,z2:3.1,sill:5,head:7,to:'out'},
+  {room:'br2',x1:33.4,z1:3.1,x2:41.1,z2:3.1,sill:2.25,head:6.75,to:'out'},
+  {room:'hall',x1:7.4,z1:18.0,x2:7.4,z2:28.3,sill:0,head:7.2,to:'bal'},
+  {room:'mbr',x1:0.3,z1:31,x2:0.3,z2:41.5,sill:2.25,head:6.75,to:'out'},
+  {room:'t3',x1:16,z1:45.0,x2:20.5,z2:45.0,sill:5,head:7,to:'out'},
+  {room:'study',x1:22,z1:45.0,x2:25.5,z2:45.0,sill:3.5,head:7,to:'out'},
+  {room:'kit',x1:32.6,z1:40.3,x2:38.3,z2:40.3,sill:0,head:7,to:'ut'},
+  {room:'bal1',x1:0.1,z1:3.4,x2:0.1,z2:16.4,sill:0,head:9.5,to:'out'},
+  {room:'bal',x1:0.1,z1:16.7,x2:0.1,z2:28.9,sill:0,head:9.5,to:'out'},
+  {room:'ut',x1:30.2,z1:44.9,x2:42.9,z2:44.9,sill:3.25,head:9.5,to:'out'}],
+ walls:[[5.2,3.1,37.8,0.5],[0.2,44.9,42.8,0.4],[42.4,3.1,0.6,42.2]]};
+/* Type S (T-02 flats 1–4, T-04 flat 1, T-06 flat 1, T-10 flats 1–2): Type R's rooms with the entrance on the west
+   and both balconies on the east. Brochure p.107. */
+PLANS.S=derive(PLANS.R,{ext:[5.2,0,49.7,48.5],verified:'Derived from the traced Type R and the Type S brochure plan; not yet checked by a Type S owner',
+  drop:['bal1','bal','hall'],dropGlaze:[g=>['bal1','bal'].includes(g.to)||['bal1','bal'].includes(g.room)],
+  rooms:[{id:'hall',name:'Living & dining',rects:[[5.5,16.7,36.9,12.7],[17.9,12.7,13.1,4.0]]},
+         {id:'bal',name:'Living balcony',rects:[[42.6,16.7,7.0,12.2]],outdoor:true},
+         {id:'balB',name:'Bedroom balcony',rects:[[42.6,3.4,5.0,13.0]],outdoor:true}],
+  open:{bal:{rects:[[42.6,16.7,7.0,12.2]],roof:9.5,edges:[{x1:49.6,z1:16.7,x2:49.6,z2:28.9,lo:0,hi:9.5}]},
+        balB:{rects:[[42.6,3.4,5.0,13.0]],roof:9.5,edges:[{x1:47.7,z1:3.4,x2:47.7,z2:16.4,lo:0,hi:9.5}]}},
+  glaze:[{room:'hall',x1:42.5,z1:18.0,x2:42.5,z2:28.3,sill:0,head:7.2,to:'bal'},
+         {room:'br2',x1:42.5,z1:3.6,x2:42.5,z2:15.8,sill:0,head:7,to:'balB'},
+         {room:'br1',x1:5.3,z1:4,x2:5.3,z2:15,sill:2.25,head:6.75,to:'out'},
+         {room:'bal',x1:49.6,z1:16.7,x2:49.6,z2:28.9,sill:0,head:9.5,to:'out'},
+         {room:'balB',x1:47.7,z1:3.4,x2:47.7,z2:16.4,sill:0,head:9.5,to:'out'}]});
 
 const FT=0.3048;
 function planFor(type){const P=PLANS[type];if(!P)return null;const e0=P.ext[0],e1=P.ext[2];const mx=v=>P.mirrorX?e0+e1-v:v;
